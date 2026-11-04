@@ -9,8 +9,10 @@ export interface IA {
 
 type Ejecutar = (modelo: string, entrada: Record<string, unknown>) => Promise<unknown>;
 interface Modelos { texto: string; respaldo: string; imagen: string; guardia: string }
-interface Tiempos { texto: number; imagen: number; guardia: number }
-const TIEMPOS: Tiempos = { texto: 8_000, imagen: 15_000, guardia: 5_000 };
+interface Tiempos { texto: number; respaldo: number; imagen: number; guardia: number }
+// Medidos en la 0B: la guardia tardó hasta 6,5 s; el principal tiene su plazo y el respaldo el suyo,
+// para que un principal colgado no deje la ficha sin probar el respaldo
+export const TIEMPOS: Tiempos = { texto: 6_000, respaldo: 4_000, imagen: 15_000, guardia: 8_000 };
 
 // Ajustes propios de cada modelo, medidos en la Tarea 0A. Un modelo sin entrada funciona sin ajustes
 interface ConfigModelo { params?: Record<string, unknown>; sufijoSistema?: string }
@@ -21,7 +23,7 @@ export const CONFIG_TEXTO: Record<string, ConfigModelo> = {
   "@cf/qwen/qwen3-30b-a3b-fp8": { sufijoSistema: " /no_think" },
 };
 
-function entradaTexto(modelo: string, mensajes: Mensaje[], esquema: object): Record<string, unknown> {
+export function entradaTexto(modelo: string, mensajes: Mensaje[], esquema: object): Record<string, unknown> {
   const { params = {}, sufijoSistema = "" } = CONFIG_TEXTO[modelo] ?? {};
   const messages = mensajes.map((m) => (m.role === "system" && sufijoSistema ? { ...m, content: m.content + sufijoSistema } : m));
   return { messages, response_format: { type: "json_schema", json_schema: esquema }, max_tokens: 900, ...params };
@@ -81,8 +83,9 @@ export function crearIADesde(ejecutar: Ejecutar, modelos: Modelos, tiempos: Tiem
   return {
     texto(mensajes, esquema) {
       const llamar = (modelo: string) => ejecutar(modelo, entradaTexto(modelo, mensajes, esquema)).then(extraerJson);
-      // un solo plazo para los dos intentos: el usuario no espera más de 8 s por el texto
-      return conTimeout(llamar(modelos.texto).catch(() => llamar(modelos.respaldo)), tiempos.texto, "texto");
+      // si el principal falla o tarda más de su plazo, el respaldo tiene el suyo: como mucho 10 s en total
+      return conTimeout(llamar(modelos.texto), tiempos.texto, "texto").catch(() =>
+        conTimeout(llamar(modelos.respaldo), tiempos.respaldo, "texto"));
     },
     async imagen(prompt) {
       const r = (await conTimeout(ejecutar(modelos.imagen, { prompt, steps: 4 }), tiempos.imagen, "imagen")) as { image?: unknown };

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { crearIADesde, esSeguro, extraerJson } from "../src/ia/workersai";
+import { crearIADesde, esSeguro, extraerJson, TIEMPOS } from "../src/ia/workersai";
 
 const MODELOS = { texto: "m-texto", respaldo: "m-respaldo", imagen: "m-imagen", guardia: "m-guardia" };
 
@@ -57,9 +57,25 @@ describe("crearIADesde", () => {
     expect(entradas[QWEN]).not.toHaveProperty("reasoning_effort");
     expect(mensajes[0].content).toBe("Reglas"); // no muta los mensajes originales
   });
-  it("texto: corta a los 8 s", async () => {
-    const ia = crearIADesde(() => new Promise(() => {}), MODELOS, { texto: 20, imagen: 20, guardia: 20 });
+  it("plazos medidos en la 0B: principal 6 s, respaldo 4 s, guardia 8 s", () => {
+    expect(TIEMPOS).toEqual({ texto: 6_000, respaldo: 4_000, imagen: 15_000, guardia: 8_000 });
+  });
+  it("texto: si el principal se cuelga, prueba el respaldo con su propio plazo", async () => {
+    const llamados: string[] = [];
+    const ia = crearIADesde((modelo) => {
+      llamados.push(modelo);
+      return modelo === "m-texto" ? new Promise(() => {}) : Promise.resolve({ response: { ok: true } });
+    }, MODELOS, { texto: 20, respaldo: 200, imagen: 20, guardia: 20 });
+    expect(await ia.texto([], {})).toEqual({ ok: true });
+    expect(llamados).toEqual(["m-texto", "m-respaldo"]);
+  });
+  it("texto: corta si ninguno de los dos responde a tiempo", async () => {
+    const ia = crearIADesde(() => new Promise(() => {}), MODELOS, { texto: 20, respaldo: 20, imagen: 20, guardia: 20 });
     await expect(ia.texto([], {})).rejects.toThrow(/timeout:texto/);
+  });
+  it("guardia: si no responde a tiempo, falla", async () => {
+    const ia = crearIADesde(() => new Promise(() => {}), MODELOS, { texto: 20, respaldo: 20, imagen: 20, guardia: 20 });
+    await expect(ia.guardia("x")).rejects.toThrow(/timeout:guardia/);
   });
   it("imagen: decodifica el base64 a bytes", async () => {
     const ia = crearIADesde(async () => ({ image: btoa("JPEG") }), MODELOS);
