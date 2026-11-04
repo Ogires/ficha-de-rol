@@ -20,7 +20,7 @@ Usa un **enfoque híbrido**:
 
 ## 2. Flujo del usuario
 
-1. **Entrada.** Pegas el CV o el "Acerca de" (de 200 a 4.000 caracteres), o eliges un PDF.
+1. **Entrada.** Pegas el CV o el "Acerca de" (de 200 a 12.000 caracteres, lo que ocupa un CV de dos o tres páginas), o eliges un PDF.
    - pdf.js extrae el texto en el navegador: el PDF no sale del equipo.
    - La librería se sirve desde la propia app (sin CDN, para mantener una CSP estricta) y solo se descarga si eliges un PDF.
    - Si el PDF está escaneado y no tiene texto, la app te pide que lo pegues a mano.
@@ -41,7 +41,7 @@ Un único Cloudflare Worker con `assets` (web estática y API en un solo deploy)
 ```
 Navegador ── (PDF → pdf.js local → texto) ──► POST /api/ficha {texto, raza, aspecto}
                                                 │
-  1. Origin + validación (200-4.000 caracteres, enums)
+  1. Origin + validación (200-12.000 caracteres, enums)
   2. Reglas (perfil.ts, puras): términos, años, nivel, atributos, clase, hechizos, objetos
        └─ menos de 3 términos ─► 422, sin gastar IA
   3. Contador (Durable Object): topes por IP + reserva de neuronas del día ── sin cupo ─► ficha manual
@@ -63,6 +63,7 @@ Navegador ── (PDF → pdf.js local → texto) ──► POST /api/ficha {tex
 
 **Decisiones clave:**
 - **El retrato no depende del texto de la IA.** Su prompt sale de las reglas: un estilo fijo, la clase, la raza, el aspecto y un objeto icónico. Por eso Flux y el modelo de texto corren en paralelo (unos 4 s en total), y el CV nunca llega al modelo de imagen.
+- **Las reglas leen el CV entero; la IA, solo los primeros 4.000 caracteres.** Las habilidades suelen ir al final de un CV, así que las reglas necesitan el texto completo, pero el coste en neuronas no crece con la longitud.
 - **La vista previa no contiene texto libre de la IA.** Clase y nivel salen de las reglas, así que el `og:title` es predecible.
 - **Retrato con la cara centrada.** LinkedIn recorta las imágenes de la vista previa a 1,91:1; el estilo fijo pide un busto centrado para que el recorte no corte la cara.
 - **KV para lo inmutable, Durable Object para lo exacto.** KV no es atómico ni sirve como contador. Cada ficha hace 2 escrituras en KV, así que el límite de 1.000 escrituras diarias no aprieta.
@@ -105,7 +106,7 @@ Unas 150 tecnologías y unas 40 señales, con alias en español e inglés, revis
 - Su epíteto ("de .NET", "de la Mentoría").
 - Opcionalmente, un objeto icónico para el retrato (Python → un bastón con una serpiente).
 
-El motor busca con regex con lookarounds Unicode (`(?<![\p{L}\p{N}])…(?![\p{L}\p{N}])` y flag `u`), porque `\b` toma las letras con tilde por separadores. En un solape gana el término más largo, para que "ASP.NET" no cuente también como ".NET". Los términos ambiguos (Go, R, C) solo casan escritos con esas mayúsculas.
+El motor busca con regex con lookarounds Unicode (`(?<![\p{L}\p{N}])…(?![\p{L}\p{N}])` y flag `u`), porque `\b` toma las letras con tilde por separadores. En un solape gana el término más largo, para que "ASP.NET" no cuente también como ".NET". Los términos ambiguos (C, Go) solo casan escritos con esas mayúsculas. R se queda fuera del catálogo: "R&D" o "Plan R" darían falsos positivos.
 
 Si el texto tiene **menos de 3 términos detectados**, no se genera ficha ni se gasta IA: la app pide un CV de verdad.
 
@@ -172,8 +173,8 @@ El contador (Durable Object con SQLite) reserva las neuronas **antes** de llamar
 ## 7. Seguridad (OWASP Top 10 2025 + OWASP LLM Top 10 2025)
 
 El CV se trata como entrada hostil (LLM01, inyección de prompt):
-- Antes de llegar al modelo, el texto pierde emails, teléfonos y URL, y va delimitado dentro de un bloque de datos. Las instrucciones van en el mensaje de sistema.
-- La IA devuelve un JSON (JSON mode de Workers AI) con tres campos: trasfondo (≤400 caracteres), defecto (≤140) y un efecto de ≤100 por cada hechizo y objeto, para los nombres exactos que le pasan las reglas. Cualquier otra cosa invalida la respuesta.
+- Antes de llegar al modelo, el texto pierde emails, teléfonos y URL, se corta a 4.000 caracteres y va dentro de un delimitador con un nonce aleatorio. Las instrucciones van en el mensaje de sistema.
+- La IA devuelve un JSON (JSON mode de Workers AI) con tres campos: trasfondo (≤400 caracteres), defecto (≤140) y un efecto de ≤100 por cada hechizo y objeto, para los nombres exactos que le pasan las reglas. Un texto que se pasa del límite sin llegar al doble se recorta en una palabra; cualquier otra desviación (nombres inventados, enlaces, HTML, campos que faltan) invalida la respuesta.
 - **Filtro de palabras propias** (LLM02, fuga de datos personales): se rechaza el campo que contenga una palabra que en el CV aparece siempre con mayúscula, salvo que sea un término del catálogo. Así no pasan el nombre de la persona, el de su empresa ni el de su ciudad. Un campo rechazado sale del banco de frases; algún falso positivo es aceptable.
 - **Llama Guard** revisa el texto antes de guardarlo.
 - **Tono:** el defecto y el trasfondo se ríen del personaje, nunca de prácticas reales de ingeniería ni de la edad, el género o el origen de nadie.
@@ -185,7 +186,7 @@ El CV se trata como entrada hostil (LLM01, inyección de prompt):
 
 - El CV no se guarda ni sale en los logs: solo se registran su longitud y el resultado (IA o manual, y el motivo del fallo).
 - El PDF y el nombre del personaje nunca salen del navegador.
-- El rate limit usa un hash de la IP con sal diaria, que se borra al día siguiente.
+- El rate limit usa un hash de la IP con una sal aleatoria del día. La sal y los contadores viven en el Durable Object y una alarma los borra al acabar el día, así que después nadie puede relacionar un hash con una IP.
 - Las fichas tienen un id aleatorio de 12 caracteres y `noindex`, y no se listan en ninguna parte.
 - Antes de implementar se comprueba en la documentación de Cloudflare qué hace Workers AI con las entradas (retención y entrenamiento).
 
@@ -195,16 +196,17 @@ El texto y el retrato fallan por separado. La demo nunca se queda en blanco.
 
 | Falla | Qué se usa |
 |---|---|
-| Texto: sin cupo, tope de IA de la IP, timeout de 8 s, JSON inválido, filtro de palabras propias o Llama Guard | Banco de frases escrito a mano: unos 5 trasfondos y 8 defectos por clase, con huecos que rellenan las reglas ({tecnología principal}, {años}). Los efectos salen de plantillas por atributo. La elección depende del hash del CV, así que el mismo CV da la misma ficha |
+| Texto: sin cupo, tope de IA de la IP, timeout de 8 s, JSON inválido o Llama Guard | Banco de frases escrito a mano: 5 trasfondos y 8 defectos por clase, con huecos que rellenan las reglas ({tecnología principal}, {clase}, {nivel}; nunca los años, para que un CV sin fechas no diga "0 años"). Los efectos salen de plantillas por atributo. La elección depende del hash del CV, así que el mismo CV da la misma ficha |
+| Texto: el filtro de palabras propias salta en un campo | Solo ese campo sale del banco; el resto se queda con el texto de la IA |
 | Retrato: sin cupo, error de Flux o tope de almacenamiento | Galería de 36 retratos (clase × raza). Todos llevan yelmo o capucha, como el aspecto "sorpresa", así que valen para cualquier aspecto |
-| Escritura en KV | Se enseña la ficha y se puede descargar el PNG. "Copiar enlace" queda desactivado y explica por qué |
+| Escritura en KV | Se enseña la ficha con el retrato de la galería (el propio no se puede servir sin guardarlo) y se puede descargar el PNG. "Copiar enlace" queda desactivado y explica por qué |
 
 Las reglas no dependen de la IA, así que una ficha manual sigue siendo de quien pegó el CV. La ficha manual lleva un sello: "Tirada a mano: el oráculo descansa".
 
 ## 10. Estrategia de tests (TDD, Vitest + `@cloudflare/vitest-plugin`)
 
 - **Reglas** (`perfil.ts`, funciones puras): años con rangos, solapes, formación excluida y frase; nivel; atributos (máximo de 3 menciones por término, techo, 6 sin términos); clase con empates, concordancia y epíteto; los 5 hechizos y 3 objetos; el mínimo de 3 términos.
-- **Catálogo:** cada entrada es válida, los alias no chocan entre sí, "ASP.NET" no cuenta como ".NET" y Go, R y C solo casan con esas mayúsculas.
+- **Catálogo:** cada entrada es válida, cada ejemplo casa solo con su término, "ASP.NET" no cuenta como ".NET" y C y Go solo casan con esas mayúsculas.
 - **Validador:** esquema del JSON, longitudes, nombres exactos y filtro de palabras propias, probado con un CV con nombre, empresa y ciudad inventados.
 - **Banco de frases:** el mismo hash da la misma ficha y no queda ningún hueco sin rellenar.
 - **Worker**, con Workers AI simulado:
