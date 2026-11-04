@@ -1,5 +1,6 @@
 import { COMPILADO } from "./catalogo";
 import { buscar, type Compilado } from "./motor";
+import { sanear } from "./saneado";
 import { recortar } from "./texto";
 import type { Narrativa } from "./tipos";
 
@@ -23,7 +24,8 @@ export function validarSalida(bruto: unknown, nombres: string[]): Narrativa | nu
   const porNombre = new Map<string, string>();
   for (const e of o.efectos) {
     if (!e || typeof e !== "object") return null;
-    const { nombre, efecto } = e as Record<string, unknown>;
+    const { nombre: bruto, efecto } = e as Record<string, unknown>;
+    const nombre = typeof bruto === "string" ? bruto.trim() : bruto; // gpt-oss a veces devuelve " .NET Core"
     const texto = campo(efecto, LIMITES.efecto);
     if (typeof nombre !== "string" || !nombres.includes(nombre) || porNombre.has(nombre) || !texto) return null;
     porNombre.set(nombre, texto);
@@ -35,6 +37,20 @@ export function validarSalida(bruto: unknown, nombres: string[]): Narrativa | nu
 const GENERICAS = new Set(["ia", "ai", "api", "apis", "erp", "crm", "pos", "rrhh", "hr", "ux", "ui", "qa", "saas", "b2b", "b2c", "ceo", "cto", "cfo", "pm", "po", "it", "ti", "tic", "rest", "pdf", "seo", "sql"]);
 const PALABRA = /\p{L}[\p{L}\p{N}]*/gu;
 
+// Lo que puede ir delante de la primera palabra de una línea: viñetas, almohadillas, negritas, numeración
+const SOLO_MARCAS = /^[\s\-*#>•\d.)]*$/;
+const FIN_DE_FRASE = /[.!?:;]["»”*]*$/;
+
+// Una mayúscula al inicio de línea, viñeta o frase no prueba que la palabra sea un nombre («Experiencia»,
+// «Construyo», «Si»), salvo que la siga otra palabra con mayúscula, como en «Lucía Ferrándiz»
+function mayusculaQueCuenta(linea: string, palabras: RegExpMatchArray[], i: number): boolean {
+  const m = palabras[i];
+  const antes = linea.slice(0, m.index).replace(/\s+$/, "");
+  if (!SOLO_MARCAS.test(antes) && !FIN_DE_FRASE.test(antes)) return true;
+  const sig = palabras[i + 1];
+  return !!sig && /^\s+$/.test(linea.slice(m.index! + m[0].length, sig.index)) && /^\p{Lu}\p{Ll}/u.test(sig[0]);
+}
+
 // LLM02: palabras que en el CV van SIEMPRE con mayúscula (nombres de personas, empresas, ciudades),
 // salvo términos del catálogo y siglas genéricas. Se comparan en minúscula
 export function palabrasPropias(cv: string, compilado: Compilado[] = COMPILADO): Set<string> {
@@ -42,7 +58,15 @@ export function palabrasPropias(cv: string, compilado: Compilado[] = COMPILADO):
   for (const c of buscar(cv, compilado)) for (const w of cv.slice(c.inicio, c.fin).match(PALABRA) ?? []) delCatalogo.add(w.toLowerCase());
   const minusculas = new Set<string>();
   const mayusculas = new Set<string>();
-  for (const w of cv.match(PALABRA) ?? []) (/^\p{Lu}/u.test(w) ? mayusculas : minusculas).add(w.toLowerCase());
+  // Sin enlaces ni emails: «linkedin.com/in/ana-ferrer» no prueba que «ana» sea una palabra normal
+  for (const linea of sanear(cv).split(/\r?\n/)) {
+    const palabras = [...linea.matchAll(PALABRA)];
+    palabras.forEach((m, i) => {
+      const w = m[0].toLowerCase();
+      if (!/^\p{Lu}/u.test(m[0])) minusculas.add(w);
+      else if (mayusculaQueCuenta(linea, palabras, i)) mayusculas.add(w);
+    });
+  }
   const propias = new Set<string>();
   for (const w of mayusculas) if (w.length >= 2 && !minusculas.has(w) && !delCatalogo.has(w) && !GENERICAS.has(w)) propias.add(w);
   return propias;
