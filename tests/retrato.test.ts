@@ -4,19 +4,25 @@ import { ASPECTOS, CLASES, OBJETO_CLASE, RAZAS } from "../src/dominio/tipos";
 
 describe("retrato", () => {
   it("el prompt sale solo de vocabulario fijo, empieza por el estilo y pide la cara centrada", () => {
-    for (const c of CLASES) for (const r of RAZAS) for (const a of ASPECTOS) {
-      const p = promptRetrato(c, r, a, OBJETO_CLASE[c]);
+    for (const c of CLASES) for (const r of RAZAS) for (const a of ASPECTOS) for (const g of ["f", "m"] as const) {
+      const p = promptRetrato(c, r, a, g, OBJETO_CLASE[c]);
       expect(p.startsWith(ESTILO)).toBe(true);
       expect(p).toMatch(/^[A-Za-z ,.'-]+$/); // ni acentos ni nada que venga de un CV
     }
     expect(ESTILO).toMatch(/face centered/);
   });
-  it("sorpresa pide yelmo o capucha; femenino y masculino lo dicen", () => {
-    expect(promptRetrato("mago", "elfo", "sorpresa", "a wooden staff")).toMatch(/hood or helmet/);
-    expect(promptRetrato("mago", "elfo", "femenino", "a wooden staff")).toMatch(/female elf wizard/);
-    expect(promptRetrato("mago", "elfo", "masculino", "a wooden staff")).toMatch(/male elf wizard/);
+  it("sin firmas ni marcas de agua (Flux las pintaba aunque se pidiera «no text»)", () => {
+    expect(ESTILO).toMatch(/no signature, no watermark/);
   });
-  it("ruta de la galería", () => {
-    expect(rutaGaleria("paladin", "enano")).toBe("/galeria/paladin-enano.jpg");
+  it("el género del retrato es el de la clase; sorpresa añade yelmo o capucha", () => {
+    expect(promptRetrato("mago", "elfo", "femenino", "f", "a wooden staff")).toMatch(/A female elf wizard holding a wooden staff/);
+    expect(promptRetrato("mago", "elfo", "masculino", "m", "a wooden staff")).toMatch(/A male elf wizard holding a wooden staff/);
+    const sorpresa = promptRetrato("mago", "elfo", "sorpresa", "f", "a wooden staff");
+    expect(sorpresa).toMatch(/A female elf wizard wearing a hood or helmet/);
+    expect(promptRetrato("mago", "elfo", "femenino", "f", "a wooden staff")).not.toMatch(/hood|helmet/);
+  });
+  it("ruta de la galería: una versión femenina y otra masculina por clase y raza", () => {
+    expect(rutaGaleria("paladin", "enano", "f")).toBe("/galeria/paladin-enano-f.jpg");
+    expect(rutaGaleria("paladin", "enano", "m")).toBe("/galeria/paladin-enano-m.jpg");
   });
 });
