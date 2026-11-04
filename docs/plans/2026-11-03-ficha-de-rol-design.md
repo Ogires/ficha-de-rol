@@ -24,12 +24,12 @@ Usa un **enfoque híbrido**:
    - pdf.js extrae el texto en el navegador: el PDF no sale del equipo.
    - La librería se sirve desde la propia app (sin CDN, para mantener una CSP estricta) y solo se descarga si eliges un PDF.
    - Si el PDF está escaneado y no tiene texto, la app te pide que lo pegues a mano.
-2. **Retrato.** Eliges raza (humano, elfo, enano, orco, mediano o gnomo) y aspecto (femenino, masculino o "sorpresa", que da un personaje con yelmo o capucha). La app nunca deduce el género a partir del CV ni del nombre.
+2. **Retrato.** Eliges raza (humano, elfo, enano, orco, mediano o gnomo) y aspecto (femenino, masculino o "sorpresa": el dado elige el género y el personaje lleva yelmo o capucha). El retrato tiene siempre el género de la clase ("Maga" → una maga). La app nunca deduce el género a partir del CV ni del nombre.
 3. **Nombre del personaje (opcional).** Solo se pinta en tu pantalla y en la imagen que descargas. No se manda al servidor.
 4. **"Tirar iniciativa".** Un d20 animado mientras se genera la ficha, unos 5-8 s.
 5. **Resultado:**
    - **Cabecera:** clase y nivel.
-   - **Atributos:** FUE, DES, CON, INT, SAB y CAR, cada uno con un "¿por qué?" que lista los términos del CV que lo suben.
+   - **Atributos:** FUE, DES, CON, INT, SAB y CAR, en un hexágono como los de las fichas de los videojuegos de fútbol (la forma deja ver la clase de un vistazo) y cada uno con un "¿por qué?" que lista los términos del CV que lo suben. El hexágono es un SVG que pinta el navegador con los valores de las reglas y también va en la imagen descargable.
    - **Contenido:** hechizos, objetos, trasfondo, defecto y retrato.
    - **Descargar imagen:** un PNG de 1080×1350 montado con canvas en el navegador, el formato vertical que mejor luce en el feed de LinkedIn.
    - **Copiar enlace:** `/f/{id}`, una ficha inmutable cuya vista previa muestra el retrato y "Paladín de .NET · nivel 18".
@@ -62,7 +62,7 @@ Navegador ── (PDF → pdf.js local → texto) ──► POST /api/ficha {tex
 | `/galeria/{clase}-{raza}.jpg` | Asset estático (galería de respaldo) |
 
 **Decisiones clave:**
-- **El retrato no depende del texto de la IA.** Su prompt sale de las reglas: un estilo fijo, la clase, la raza, el aspecto y un objeto icónico. Por eso Flux y el modelo de texto corren en paralelo (unos 4 s en total), y el CV nunca llega al modelo de imagen.
+- **El retrato no depende del texto de la IA.** Su prompt sale de las reglas: un estilo fijo, la clase y su género, la raza con sus rasgos, el aspecto y un objeto icónico. Por eso Flux y el modelo de texto corren en paralelo (unos 4 s en total), y el CV nunca llega al modelo de imagen.
 - **Las reglas leen el CV entero; la IA, solo los primeros 4.000 caracteres.** Las habilidades suelen ir al final de un CV, así que las reglas necesitan el texto completo, pero el coste en neuronas no crece con la longitud.
 - **La vista previa no contiene texto libre de la IA.** Clase y nivel salen de las reglas, así que el `og:title` es predecible.
 - **Retrato con la cara centrada.** LinkedIn recorta las imágenes de la vista previa a 1,91:1; el estilo fijo pide un busto centrado para que el recorte no corte la cara.
@@ -154,19 +154,21 @@ La clase concuerda con el aspecto elegido; con "sorpresa", la forma la decide el
 
 ## 6. Coste y topes
 
-Precios de Workers AI comprobados el 2026-10-29. El plan gratuito da 10.000 neuronas al día por cuenta, compartidas con el resto de apps de la factoría.
+Precios de Workers AI comprobados el 2026-10-29 y consumo medido con el prompt real el 2026-11-04. El plan gratuito da 10.000 neuronas al día por cuenta, compartidas con el resto de apps de la factoría.
 
 | Paso | Neuronas |
 |---|---|
-| Texto con `gpt-oss-20b` (~1.700 tokens de entrada y ~600 de salida, razonamiento bajo) | ~47 |
-| Llama Guard 3 (~500 tokens de entrada) | ~22 |
+| Texto con `qwen3-30b-a3b-fp8` (~1.200 tokens de entrada y ~250 de salida, sin pensamiento) | ~13 |
+| Respaldo, solo si falla el anterior: `gpt-oss-20b` con razonamiento bajo | ~30 |
+| Llama Guard 3 | ~18 |
 | Flux-1-schnell, 1024² con 4 pasos | ~58 |
 | **Reserva por ficha** | **130** |
 
-- **Cupo diario:** `CUOTA_NEURONAS_DIA` = 6.000, unas 46 fichas con IA al día. Con `qwen3-30b-a3b-fp8` como modelo de texto bajaría a unas 23 neuronas y cabrían unas 60.
+- **Modelo de texto:** `qwen3-30b-a3b-fp8` dio 63 JSON válidos de 63 en la comparativa, con una mediana de 2,2 s. `gpt-oss-20b` escribe con más imaginación, pero se pasaba de largo, a veces devolvía la respuesta vacía y tardaba más de 6 s una de cada ocho veces, así que queda de respaldo.
+- **Cupo diario:** `CUOTA_NEURONAS_DIA` = 6.000, unas 46 fichas con IA al día. La reserva cubre el peor caso medido (respaldo incluido, ~141 contra las ~89 de una ficha normal) con margen hasta el límite de la cuenta.
 - **Por IP y día:** 5 fichas con IA (`TOPE_IA_IP_DIA`); a partir de ahí, la ficha sale manual, con un tope de 20 (`TOPE_FICHAS_IP_DIA`) para proteger las escrituras de KV.
-- **Almacenamiento:** el Durable Object lleva la cuenta de los bytes guardados en KV (1 GB gratis). Al llegar a 800 MB (`TOPE_BYTES_KV`), las fichas nuevas usan la galería.
-- **Galería de respaldo:** 6 clases × 6 razas = 36 retratos, generados una sola vez (~2.100 neuronas, repartibles en dos días) y servidos como assets, que son gratuitos e ilimitados.
+- **Almacenamiento:** el Durable Object lleva la cuenta de los bytes guardados en KV (1 GB gratis). Al llegar a 800 MB (`TOPE_BYTES_KV`), unos 1.460 retratos de ~550 KB, las fichas nuevas usan la galería.
+- **Galería de respaldo:** 6 clases × 6 razas × femenino/masculino = 72 retratos, generados una sola vez (~4.150 neuronas, repartibles en dos días) y servidos como assets, que son gratuitos e ilimitados.
 
 El contador (Durable Object con SQLite) reserva las neuronas **antes** de llamar a la IA, con el mismo patrón que el `Contador` de Interview Fight Club.
 
@@ -175,7 +177,8 @@ El contador (Durable Object con SQLite) reserva las neuronas **antes** de llamar
 El CV se trata como entrada hostil (LLM01, inyección de prompt):
 - Antes de llegar al modelo, el texto pierde emails, teléfonos y URL, se corta a 4.000 caracteres y va dentro de un delimitador con un nonce aleatorio. Las instrucciones van en el mensaje de sistema.
 - La IA devuelve un JSON (JSON mode de Workers AI) con tres campos: trasfondo (≤400 caracteres), defecto (≤140) y un efecto de ≤100 por cada hechizo y objeto, para los nombres exactos que le pasan las reglas. Un texto que se pasa del límite sin llegar al doble se recorta en una palabra; cualquier otra desviación (nombres inventados, enlaces, HTML, campos que faltan) invalida la respuesta.
-- **Filtro de palabras propias** (LLM02, fuga de datos personales): se rechaza el campo que contenga una palabra que en el CV aparece siempre con mayúscula, salvo que sea un término del catálogo. Así no pasan el nombre de la persona, el de su empresa ni el de su ciudad. Un campo rechazado sale del banco de frases; algún falso positivo es aceptable.
+- **Filtro de palabras propias** (LLM02, fuga de datos personales): se rechaza el campo que contenga una palabra que en el CV aparece siempre con mayúscula, salvo que sea un término del catálogo. La mayúscula de inicio de línea, viñeta o frase no cuenta ("Experiencia", "Construyo"), salvo en un nombre y apellido seguidos, y los enlaces y emails se quitan antes de mirar. Así no pasan el nombre de la persona, el de su empresa ni el de su ciudad. Un campo rechazado sale del banco de frases; algún falso positivo es aceptable.
+- **Sin copias del CV:** un campo que repite 6 palabras seguidas del CV sale también del banco de frases. Además de pedir texto propio, evita que se cuelen frases enteras con datos de la persona.
 - **Llama Guard** revisa el texto antes de guardarlo.
 - **Tono:** el defecto y el trasfondo se ríen del personaje, nunca de prácticas reales de ingeniería ni de la edad, el género o el origen de nadie.
 - **La IA no decide lo visible en la vista previa** (clase y nivel) ni elige qué hechizos aparecen.
@@ -196,9 +199,9 @@ El texto y el retrato fallan por separado. La demo nunca se queda en blanco.
 
 | Falla | Qué se usa |
 |---|---|
-| Texto: sin cupo, tope de IA de la IP, timeout de 8 s, JSON inválido o Llama Guard | Banco de frases escrito a mano: 5 trasfondos y 8 defectos por clase, con huecos que rellenan las reglas ({tecnología principal}, {clase}, {nivel}; nunca los años, para que un CV sin fechas no diga "0 años"). Los efectos salen de plantillas por atributo. La elección depende del hash del CV, así que el mismo CV da la misma ficha |
-| Texto: el filtro de palabras propias salta en un campo | Solo ese campo sale del banco; el resto se queda con el texto de la IA |
-| Retrato: sin cupo, error de Flux o tope de almacenamiento | Galería de 36 retratos (clase × raza). Todos llevan yelmo o capucha, como el aspecto "sorpresa", así que valen para cualquier aspecto |
+| Texto: sin cupo, tope de IA de la IP, timeout (6 s el modelo principal y 4 s el de respaldo), JSON inválido o Llama Guard | Banco de frases escrito a mano: 5 trasfondos y 8 defectos por clase, con huecos que rellenan las reglas ({tecnología principal}, {clase}, {nivel}; nunca los años, para que un CV sin fechas no diga "0 años"). Los efectos salen de plantillas por atributo. La elección depende del hash del CV, así que el mismo CV da la misma ficha |
+| Texto: el filtro de palabras propias o el de copias salta en un campo | Solo ese campo sale del banco; el resto se queda con el texto de la IA |
+| Retrato: sin cupo, error de Flux o tope de almacenamiento | Galería de 72 retratos (clase × raza × género). Se usa la versión del género de la clase, también con "sorpresa" |
 | Escritura en KV | Se enseña la ficha con el retrato de la galería (el propio no se puede servir sin guardarlo) y se puede descargar el PNG. "Copiar enlace" queda desactivado y explica por qué |
 
 Las reglas no dependen de la IA, así que una ficha manual sigue siendo de quien pegó el CV. La ficha manual lleva un sello: "Tirada a mano: el oráculo descansa".

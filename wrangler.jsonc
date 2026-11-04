@@ -13,8 +13,8 @@
   "durable_objects": { "bindings": [{ "name": "CONTADOR", "class_name": "Contador" }] },
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Contador"] }],
   "vars": {
-    "MODELO_TEXTO": "@cf/openai/gpt-oss-20b",
-    "MODELO_TEXTO_RESPALDO": "@cf/qwen/qwen3-30b-a3b-fp8",
+    "MODELO_TEXTO": "@cf/qwen/qwen3-30b-a3b-fp8",
+    "MODELO_TEXTO_RESPALDO": "@cf/openai/gpt-oss-20b",
     "MODELO_IMAGEN": "@cf/black-forest-labs/flux-1-schnell",
     "MODELO_GUARDIA": "@cf/meta/llama-guard-3-8b",
     "CUOTA_NEURONAS_DIA": "6000",
