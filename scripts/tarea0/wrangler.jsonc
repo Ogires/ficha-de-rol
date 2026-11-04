@@ -1,0 +1,8 @@
+// SOLO para pruebas locales con la IA real de la cuenta (gasta neuronas de verdad)
+{
+  "name": "ficha-de-rol-tarea0",
+  "main": "worker.ts",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": false,
+  "ai": { "binding": "AI", "remote": true }
+}
