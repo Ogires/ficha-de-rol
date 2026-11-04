@@ -7,6 +7,15 @@ export const ESTILO =
 
 const RAZA_EN: Record<Raza, string> = { humano: "human", elfo: "elf", enano: "dwarf", orco: "orc", mediano: "halfling", gnomo: "gnome" };
 const CLASE_EN: Record<Clase, string> = { guerrero: "warrior", picaro: "rogue", paladin: "paladin", mago: "wizard", explorador: "ranger", bardo: "bard" };
+// Sin rasgos, Flux pintaba la mediana como una elfa y la enana como una humana (0B)
+const RASGOS: Record<Raza, string> = {
+  humano: "",
+  elfo: "Long pointed ears.",
+  enano: "Short, stout and broad-shouldered.",
+  orco: "Green skin and small tusks.",
+  mediano: "Small, with curly hair, round cheeks and round ears.",
+  gnomo: "Tiny, with a large nose and bright curious eyes.",
+};
 
 // El CV nunca llega aquí: solo enums y un icono del catálogo (texto nuestro).
 // El género es siempre el de la clase («Maga» → retrato femenino); con «sorpresa» lo decide el dado
@@ -14,7 +23,7 @@ const CLASE_EN: Record<Clase, string> = { guerrero: "warrior", picaro: "rogue", 
 export function promptRetrato(clase: Clase, raza: Raza, aspecto: Aspecto, genero: "f" | "m", icono: string): string {
   const quien = `${genero === "f" ? "female" : "male"} ${RAZA_EN[raza]} ${CLASE_EN[clase]}`;
   const capucha = aspecto === "sorpresa" ? " wearing a hood or helmet" : "";
-  return `${ESTILO}. A ${quien}${capucha} holding ${icono}.`;
+  return `${ESTILO}. A ${quien}${capucha} holding ${icono}.${RASGOS[raza] ? ` ${RASGOS[raza]}` : ""}`;
 }
 
 // Galería de respaldo: una versión femenina y otra masculina por clase y raza (72 retratos)

@@ -41,6 +41,12 @@ describe("construirPrompt", () => {
     expect(fem).toContain("Guerrera de Java, en femenino");
     expect(masc).toContain("Guerrero de Java, en masculino");
   });
+  it("lleva un ejemplo de tono, que no es de esta ficha ni debe copiarse (qwen escribía plano)", () => {
+    const sistema = mensajes[0].content;
+    expect(sistema).toMatch(/Ejemplo de tono, para otra ficha \(no lo copies\): \{/);
+    const ejemplo = JSON.parse(/no lo copies\): (\{.*\})/.exec(sistema)![1]);
+    expect(Object.keys(ejemplo)).toEqual(["trasfondo", "defecto", "efectos"]);
+  });
   it("lista los hechizos y objetos exactos y la clase calculada por las reglas", () => {
     expect(mensajes[1].content).toContain(`CLASE: ${p.clase} (nivel ${p.nivel.valor})`);
     for (const n of [...p.hechizos, ...p.objetos]) expect(mensajes[1].content).toContain(n);

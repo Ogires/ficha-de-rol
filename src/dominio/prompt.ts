@@ -19,6 +19,13 @@ export const ESQUEMA = {
   required: ["trasfondo", "defecto", "efectos"],
 };
 
+// Sin un ejemplo, qwen resumía el CV en vez de contar una leyenda (0B). Es de una ficha inventada
+const EJEMPLO_TONO = {
+  trasfondo: "Aprendió a domar hojas de estilo en una taberna de becarios y desde entonces ningún botón se le tuerce. Hoy recorre el reino rescatando formularios perdidos.",
+  defecto: "Pide perdón al navegador cada vez que abre las herramientas de desarrollo.",
+  efectos: [{ nombre: "Vue.js", efecto: "Lanza una interfaz que se recoloca sola antes de que el enemigo parpadee." }],
+};
+
 export function construirPrompt(p: Perfil, cv: string, nonce: string): Mensaje[] {
   const nombres = [...p.hechizos, ...p.objetos];
   const sistema = [
@@ -33,7 +40,8 @@ export function construirPrompt(p: Perfil, cv: string, nonce: string): Mensaje[]
     "6. Sé breve: el trasfondo, 2 o 3 frases y 55 palabras como máximo; el defecto, una frase de 18 palabras como máximo; cada efecto, una frase de 14 palabras como máximo.",
     "7. Responde solo con JSON: {\"trasfondo\": texto de 400 caracteres como máximo, \"defecto\": texto de 140 como máximo, \"efectos\": [{\"nombre\", \"efecto\": texto de 100 como máximo}]}.",
     "8. En \"efectos\" va exactamente un elemento por cada nombre de HECHIZOS y OBJETOS, con el nombre copiado tal cual y en el mismo orden.",
-    "9. El trasfondo cuenta la carrera del personaje como una leyenda. El defecto es una manía graciosa. Cada efecto describe qué hace ese hechizo u objeto en combate.",
+    "9. El trasfondo cuenta la carrera del personaje como una leyenda épica y exagerada, con humor. El defecto es una manía graciosa. Cada efecto describe qué hace ese hechizo u objeto en combate, de forma fantástica y no como una descripción técnica.",
+    `Ejemplo de tono, para otra ficha (no lo copies): ${JSON.stringify(EJEMPLO_TONO)}`,
   ].join("\n");
   const usuario = [
     `CLASE: ${p.clase} (nivel ${p.nivel.valor})`,
