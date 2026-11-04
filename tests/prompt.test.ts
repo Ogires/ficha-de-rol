@@ -29,6 +29,18 @@ describe("construirPrompt", () => {
     expect(usuario).toMatch(/<cv-ab12cd34>[\s\S]*<\/cv-ab12cd34>/);
     expect(usuario).not.toContain("ana@x.es");
   });
+  it("pide longitudes en palabras, prohíbe nombres y frases copiadas y fija el género de la clase (0B)", () => {
+    const sistema = mensajes[0].content;
+    expect(sistema).toMatch(/trasfondo[^\n]*\d+ palabras/i);
+    expect(sistema).toMatch(/defecto[^\n]*\d+ palabras/i);
+    expect(sistema).toMatch(/efecto[^\n]*\d+ palabras/i);
+    expect(sistema).toMatch(/tampoco el de la persona del CV/);
+    expect(sistema).toMatch(/No copies frases del CV/);
+    const fem = construirPrompt({ ...p, genero: "f", clase: "Guerrera de Java" }, javaSenior, "ab12cd34")[0].content;
+    const masc = construirPrompt({ ...p, genero: "m", clase: "Guerrero de Java" }, javaSenior, "ab12cd34")[0].content;
+    expect(fem).toContain("Guerrera de Java, en femenino");
+    expect(masc).toContain("Guerrero de Java, en masculino");
+  });
   it("lista los hechizos y objetos exactos y la clase calculada por las reglas", () => {
     expect(mensajes[1].content).toContain(`CLASE: ${p.clase} (nivel ${p.nivel.valor})`);
     for (const n of [...p.hechizos, ...p.objetos]) expect(mensajes[1].content).toContain(n);
