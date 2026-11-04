@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { TERMINOS, validarCatalogo } from "../src/dominio/catalogo";
+import { buscar, compilar } from "../src/dominio/motor";
 import type { Termino } from "../src/dominio/tipos";
 
 const t = (extra: Partial<Termino>): Termino => ({
@@ -42,6 +43,13 @@ describe("catálogo real (data/catalogo.json)", () => {
     for (const a of ["FUE", "DES", "CON", "INT", "SAB", "CAR"]) {
       expect(TERMINOS.filter((x) => x.atributo === a).length, a).toBeGreaterThanOrEqual(12);
     }
+  });
+  it("APIs, pagos e integraciones suben INT (diseño de APIs); la integración continua sigue en SAB", () => {
+    const C = compilar(TERMINOS);
+    const atributos = (texto: string) => buscar(texto, C).map((m) => `${m.termino.id}:${m.termino.atributo}`);
+    expect(atributos("Diseñé la API de cobros con Stripe y otras pasarelas de pago")).toEqual(["api:INT", "stripe:INT", "pagos:INT"]);
+    expect(atributos("Integré el ERP con la integración continua y pruebas de integración")).toEqual(["integraciones:INT", "cicd:SAB", "tests:SAB"]);
+    expect(atributos("integration tests and continuous integration")).toEqual(["tests:SAB", "cicd:SAB"]);
   });
   it("R no está (falsos positivos) y C/Go son exactos", () => {
     expect(TERMINOS.find((x) => x.patron === "R")).toBeUndefined();
