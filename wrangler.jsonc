@@ -1,0 +1,26 @@
+{
+  "name": "ficha-de-rol",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  // run_worker_first: el Worker pone las cabeceras de seguridad también a los estáticos
+  "assets": { "directory": "./public", "binding": "ASSETS", "run_worker_first": true },
+  "routes": [{ "pattern": "rol.webninja.fyi", "custom_domain": true }],
+  "workers_dev": true,
+  "observability": { "enabled": true },
+  "ai": { "binding": "AI", "remote": true },
+  "kv_namespaces": [{ "binding": "KV", "id": "44730d27e1f74817bbc3a1558ca720dc" }],
+  // Plan Free: solo Durable Objects con SQLite
+  "durable_objects": { "bindings": [{ "name": "CONTADOR", "class_name": "Contador" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Contador"] }],
+  "vars": {
+    "MODELO_TEXTO": "@cf/openai/gpt-oss-20b",
+    "MODELO_TEXTO_RESPALDO": "@cf/qwen/qwen3-30b-a3b-fp8",
+    "MODELO_IMAGEN": "@cf/black-forest-labs/flux-1-schnell",
+    "MODELO_GUARDIA": "@cf/meta/llama-guard-3-8b",
+    "CUOTA_NEURONAS_DIA": "6000",
+    "RESERVA_NEURONAS": "130",
+    "TOPE_IA_IP_DIA": "5",
+    "TOPE_FICHAS_IP_DIA": "20",
+    "TOPE_BYTES_KV": "800000000"
+  }
+}
