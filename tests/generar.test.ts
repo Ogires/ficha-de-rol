@@ -75,7 +75,7 @@ describe("generar", () => {
     const pf = calcularPerfil(javaSenior, "femenino")!;
     const otra = iaFalsa({ texto: narrativaPara(nombres) });
     await generar(javaSenior, pf, "orco", "femenino", { ...base, ia: otra.ia });
-    expect(otra.llamadas.imagenes[0]).toMatch(/A female orc warrior holding .*Green skin/);
+    expect(otra.llamadas.imagenes[0]).toMatch(/A female orc warrior holding .*She has green skin/);
   });
 
   it("si falla Flux, el texto de la IA sigue y el retrato pasa a la galería", async () => {

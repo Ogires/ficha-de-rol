@@ -21,10 +21,12 @@ describe("retrato", () => {
     expect(sorpresa).toMatch(/A female elf wizard wearing a hood or helmet/);
     expect(promptRetrato("mago", "elfo", "femenino", "f", "a wooden staff")).not.toMatch(/hood|helmet/);
   });
-  it("describe los rasgos de cada raza (Flux pintaba la mediana como una elfa y la enana como humana)", () => {
-    expect(promptRetrato("picaro", "mediano", "femenino", "f", "twin daggers")).toMatch(/round ears/i);
-    expect(promptRetrato("guerrero", "enano", "femenino", "f", "a longsword")).toMatch(/stout/i);
-    expect(promptRetrato("paladin", "orco", "masculino", "m", "a tower shield")).toMatch(/green skin/i);
+  it("describe los rasgos de cada raza, en el género del retrato (Flux pintaba enanos y medianos como elfos)", () => {
+    expect(promptRetrato("picaro", "mediano", "femenino", "f", "twin daggers")).toMatch(/She is a small, cheerful .*halfling woman with curly hair/);
+    expect(promptRetrato("guerrero", "enano", "femenino", "f", "a longsword")).toMatch(/She is a short, stout dwarf woman/);
+    expect(promptRetrato("guerrero", "enano", "femenino", "f", "a longsword")).not.toMatch(/beard/);
+    expect(promptRetrato("explorador", "enano", "masculino", "m", "a longbow")).toMatch(/He is a short, stout dwarf .*thick braided beard/);
+    expect(promptRetrato("paladin", "orco", "masculino", "m", "a tower shield")).toMatch(/He has green skin and small tusks/);
     expect(promptRetrato("mago", "humano", "masculino", "m", "a wooden staff")).toMatch(/holding a wooden staff\.$/);
   });
   it("ruta de la galería: una versión femenina y otra masculina por clase y raza", () => {
