@@ -1,5 +1,5 @@
 import type { Env } from "../env";
-import { ASPECTOS, RAZAS, type Aspecto, type Ficha, type Raza } from "../dominio/tipos";
+import { ASPECTOS, ATRIBUTOS, RAZAS, type Aspecto, type Ficha, type Raza } from "../dominio/tipos";
 import { calcularPerfil } from "../dominio/perfil";
 import { rutaGaleria } from "../dominio/retrato";
 import { generar } from "../generar";
@@ -112,4 +112,35 @@ export async function fichaPublica(id: string, env: Env): Promise<Response> {
   const f = await leerFicha(env.KV, id);
   if (!f) return json({ error: "no_existe", mensaje: "Esta ficha no consta en el gremio" }, 404, { "x-robots-tag": "noindex" });
   return json(f, 200, { "cache-control": "public, max-age=3600", "x-robots-tag": "noindex" }); // inmutable
+}
+
+export async function retratoPropio(id: string, env: Env): Promise<Response> {
+  const datos = ES_ID.test(id) ? await env.KV.get(`r:${id}`, "arrayBuffer") : null;
+  if (!datos) return new Response("Este retrato no consta en el gremio", { status: 404, headers: { "content-type": "text/plain; charset=utf-8" } });
+  return new Response(datos, { headers: { "content-type": "image/jpeg", "cache-control": "public, max-age=31536000, immutable" } });
+}
+
+// og dinámicos: HTMLRewriter.setAttribute escapa el contenido (LLM05)
+export async function paginaFicha(request: Request, id: string, env: Env): Promise<Response> {
+  // assets sirve f.html en "/f" (html_handling quita la extensión)
+  const pagina = await env.ASSETS.fetch(new Request(new URL("/f", request.url)));
+  const f = await leerFicha(env.KV, id);
+  const cabeceras = new Headers(pagina.headers);
+  cabeceras.delete("etag"); // el ETag es el de f.html genérico
+  cabeceras.set("x-robots-tag", "noindex");
+  if (!f) return new Response(pagina.body, { status: 404, headers: cabeceras });
+
+  const origen = new URL(request.url).origin;
+  const titulo = `${f.clase} · nivel ${f.nivel.valor}`;
+  const descripcion = `${ATRIBUTOS.map((a) => `${a} ${f.atributos[a].valor}`).join(" · ")}. Convierte tu CV en una ficha de rol.`;
+  const imagen = f.retrato.tipo === "propio" ? `${origen}/f/${f.id}/retrato.jpg` : `${origen}${f.retrato.ruta}`;
+  const poner = (valor: string) => ({ element: (e: Element) => void e.setAttribute("content", valor) });
+  return new HTMLRewriter()
+    .on("title", { element: (e) => void e.setInnerContent(`${titulo} · Ficha de Rol`) })
+    .on('meta[property="og:title"]', poner(titulo))
+    .on('meta[property="og:description"]', poner(descripcion))
+    .on('meta[name="description"]', poner(descripcion))
+    .on('meta[property="og:image"]', poner(imagen))
+    .on('meta[property="og:url"]', poner(`${origen}/f/${f.id}`))
+    .transform(new Response(pagina.body, { status: 200, headers: cabeceras }));
 }

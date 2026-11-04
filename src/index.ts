@@ -1,7 +1,7 @@
 import type { Env } from "./env";
 import { conCabeceras } from "./http/cabeceras";
 import { json } from "./http/util";
-import { crearFicha, depsDesdeEnv, fichaPublica } from "./handlers/ficha";
+import { crearFicha, depsDesdeEnv, fichaPublica, paginaFicha, retratoPropio } from "./handlers/ficha";
 export { Contador } from "./contadores/contador";
 
 type Ruta = (request: Request, env: Env, param: string) => Promise<Response> | Response;
@@ -9,6 +9,8 @@ type Ruta = (request: Request, env: Env, param: string) => Promise<Response> | R
 const RUTAS: { patron: RegExp; metodos: Record<string, Ruta> }[] = [
   { patron: /^\/api\/ficha$/, metodos: { POST: (r, e) => crearFicha(r, depsDesdeEnv(e)) } },
   { patron: /^\/api\/ficha\/([^/]+)$/, metodos: { GET: (_r, e, id) => fichaPublica(id, e) } },
+  { patron: /^\/f\/([^/]+)\/retrato\.jpg$/, metodos: { GET: (_r, e, id) => retratoPropio(id, e) } },
+  { patron: /^\/f\/([^/]+)$/, metodos: { GET: (r, e, id) => paginaFicha(r, id, e) } },
 ];
 
 function decodificar(s: string): string {
