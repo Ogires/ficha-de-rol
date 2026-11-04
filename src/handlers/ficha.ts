@@ -132,7 +132,7 @@ export async function paginaFicha(request: Request, id: string, env: Env): Promi
 
   const origen = new URL(request.url).origin;
   const titulo = `${f.clase} · nivel ${f.nivel.valor}`;
-  const descripcion = `${ATRIBUTOS.map((a) => `${a} ${f.atributos[a].valor}`).join(" · ")}. Convierte tu CV en una ficha de rol.`;
+  const descripcion = `${ATRIBUTOS.map((a) => `${a} ${f.atributos[a].valor}`).join(" · ")}. Pega tu CV y recibe tu propia ficha de personaje con un retrato pintado por IA.`;
   const imagen = f.retrato.tipo === "propio" ? `${origen}/f/${f.id}/retrato.jpg` : `${origen}${f.retrato.ruta}`;
   const poner = (valor: string) => ({ element: (e: Element) => void e.setAttribute("content", valor) });
   return new HTMLRewriter()

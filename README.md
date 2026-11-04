@@ -95,7 +95,7 @@ Con un cupo de 6.000 neuronas salen unas 46 fichas con IA al día. Después, la 
 
 ```bash
 npm ci
-npm test           # 114 tests sobre el runtime real de Workers (KV y Durable Objects incluidos)
+npm test           # 115 tests sobre el runtime real de Workers (KV y Durable Objects incluidos)
 npm run typecheck
 npm run probar -- tests/fixtures/java-senior.txt   # las reglas con un CV, sin IA
 npm run dev        # http://localhost:8787 (usa Workers AI de tu cuenta: gasta neuronas)

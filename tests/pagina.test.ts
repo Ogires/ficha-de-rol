@@ -20,6 +20,17 @@ describe("/f/{id}", () => {
     expect(html).toContain("FUE 15 · DES 12 · CON 19");
   });
 
+  it("las descripciones de la vista previa llegan a 100 caracteres (el Post Inspector de LinkedIn avisa por debajo)", async () => {
+    await env.KV.put("f:AbCdEfGhJkLm", JSON.stringify(ficha({})));
+    for (const ruta of ["/", "/f/AbCdEfGhJkLm"]) {
+      const html = await (await SELF.fetch(`${BASE}${ruta}`)).text();
+      for (const meta of ['name="description"', 'property="og:description"']) {
+        const contenido = html.match(new RegExp(`<meta ${meta} content="([^"]*)"`))?.[1] ?? "";
+        expect(contenido.length, `${ruta} ${meta}: «${contenido}»`).toBeGreaterThanOrEqual(100);
+      }
+    }
+  });
+
   it("con retrato de galería apunta al asset", async () => {
     await env.KV.put("f:GaLeRiAaaaaa", JSON.stringify(ficha({ id: "GaLeRiAaaaaa", retrato: { tipo: "galeria", ruta: "/galeria/paladin-enano-m.jpg" } })));
     expect(await (await SELF.fetch(`${BASE}/f/GaLeRiAaaaaa`)).text()).toContain(`content="${BASE}/galeria/paladin-enano-m.jpg"`);
