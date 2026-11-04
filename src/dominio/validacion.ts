@@ -76,3 +76,20 @@ export function primeraPropia(texto: string, propias: Set<string>): string | nul
   for (const w of texto.match(PALABRA) ?? []) if (propias.has(w.toLowerCase())) return w;
   return null;
 }
+
+// Regla 3 del prompt («no copies frases del CV»), comprobada: un campo que repite LARGO_COPIA palabras
+// seguidas del CV o del ejemplo de tono sale del banco. En la 0B, qwen copiaba frases enteras de ambos
+const LARGO_COPIA = 6;
+const PALABRA_O_NUMERO = /\p{L}[\p{L}\p{N}]*|\p{N}+/gu;
+
+export function ngramas(texto: string, n = LARGO_COPIA): Set<string> {
+  const w = (texto.toLowerCase().match(PALABRA_O_NUMERO) ?? []) as string[];
+  const r = new Set<string>();
+  for (let i = 0; i + n <= w.length; i++) r.add(w.slice(i, i + n).join(" "));
+  return r;
+}
+
+export function primeraCopia(texto: string, fuente: Set<string>, n = LARGO_COPIA): string | null {
+  for (const g of ngramas(texto, n)) if (fuente.has(g)) return g;
+  return null;
+}

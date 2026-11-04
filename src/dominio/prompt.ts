@@ -19,11 +19,17 @@ export const ESQUEMA = {
   required: ["trasfondo", "defecto", "efectos"],
 };
 
-// Sin un ejemplo, qwen resumía el CV en vez de contar una leyenda (0B). Es de una ficha inventada
-const EJEMPLO_TONO = {
+// Sin un ejemplo, qwen resumía el CV en vez de contar una leyenda (0B). Es de una ficha inventada.
+// Con un solo efecto, qwen repetía su molde en todos: van tres que empiezan distinto. Lo que copie
+// palabra por palabra lo caza primeraCopia
+export const EJEMPLO_TONO = {
   trasfondo: "Aprendió a domar hojas de estilo en una taberna de becarios y desde entonces ningún botón se le tuerce. Hoy recorre el reino rescatando formularios perdidos.",
   defecto: "Pide perdón al navegador cada vez que abre las herramientas de desarrollo.",
-  efectos: [{ nombre: "Vue.js", efecto: "Lanza una interfaz que se recoloca sola antes de que el enemigo parpadee." }],
+  efectos: [
+    { nombre: "Vue.js", efecto: "Lanza una interfaz que se recoloca sola antes de que el enemigo parpadee." },
+    { nombre: "Docker", efecto: "Encierra al bug en una caja de la que no sabe salir." },
+    { nombre: "Jira", efecto: "Al alzarlo, el enemigo queda paralizado por tres tareas bloqueantes." },
+  ],
 };
 
 export function construirPrompt(p: Perfil, cv: string, nonce: string): Mensaje[] {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { palabrasPropias, primeraPropia, validarSalida } from "../src/dominio/validacion";
+import { ngramas, palabrasPropias, primeraCopia, primeraPropia, validarSalida } from "../src/dominio/validacion";
 import javaSenior from "./fixtures/java-senior.txt?raw";
 
 const NOMBRES = ["Java", "Docker"];
@@ -59,5 +59,17 @@ describe("palabras propias", () => {
   it("primeraPropia encuentra la palabra aunque venga en minúscula", () => {
     expect(primeraPropia("Fue escudera en zarandaja durante años", propias)).toBe("zarandaja");
     expect(primeraPropia("Una leyenda del backend", propias)).toBeNull();
+  });
+});
+
+describe("copias del CV o del ejemplo de tono (regla 3 del prompt)", () => {
+  const cv = ngramas("Artesano de Node.js con más de 12 años de experiencia, abriendo caminos entre el monolito y la nube.");
+  it("detecta 6 palabras seguidas del CV, sin mirar mayúsculas ni puntuación", () => {
+    expect(primeraCopia("Artesana de Node.js con más de 12 años de experiencia, cruzó el reino.", cv)).toBe("de node js con más de");
+    expect(primeraCopia("ABRIENDO CAMINOS ENTRE EL MONOLITO Y el futuro", cv)).toBe("abriendo caminos entre el monolito y");
+  });
+  it("5 palabras seguidas o un texto propio no cuentan como copia", () => {
+    expect(primeraCopia("Abriendo caminos entre el monolito, forjó su leyenda.", cv)).toBeNull();
+    expect(primeraCopia("Forjó su leyenda entre servidores que nadie se atrevía a reiniciar.", cv)).toBeNull();
   });
 });

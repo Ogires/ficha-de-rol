@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { sanear } from "../src/dominio/saneado";
-import { construirPrompt, ESQUEMA, MAX_CV_IA } from "../src/dominio/prompt";
+import { construirPrompt, EJEMPLO_TONO, ESQUEMA, MAX_CV_IA } from "../src/dominio/prompt";
 import { calcularPerfil } from "../src/dominio/perfil";
 import javaSenior from "./fixtures/java-senior.txt?raw";
 
@@ -46,6 +46,12 @@ describe("construirPrompt", () => {
     expect(sistema).toMatch(/Ejemplo de tono, para otra ficha \(no lo copies\): \{/);
     const ejemplo = JSON.parse(/no lo copies\): (\{.*\})/.exec(sistema)![1]);
     expect(Object.keys(ejemplo)).toEqual(["trasfondo", "defecto", "efectos"]);
+    expect(ejemplo).toEqual(EJEMPLO_TONO);
+  });
+  it("los efectos del ejemplo empiezan distinto, para que no se imite un solo molde", () => {
+    const inicios = EJEMPLO_TONO.efectos.map((e) => e.efecto.split(" ")[0]);
+    expect(inicios.length).toBeGreaterThanOrEqual(3);
+    expect(new Set(inicios).size).toBe(inicios.length);
   });
   it("lista los hechizos y objetos exactos y la clase calculada por las reglas", () => {
     expect(mensajes[1].content).toContain(`CLASE: ${p.clase} (nivel ${p.nivel.valor})`);
