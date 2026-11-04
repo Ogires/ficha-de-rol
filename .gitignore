@@ -1,0 +1,11 @@
+node_modules/
+.wrangler/
+# Secretos locales: .dev.vars, .dev.vars.production, .env, .env.local...
+.dev.vars*
+.env*
+# CV reales para probar en local: nunca en el repo público
+cv-*.md
+data/privado/
+
+# Plan de implementación: notas de trabajo para el agente, no se publica
+docs/plans/*-mv1.md
