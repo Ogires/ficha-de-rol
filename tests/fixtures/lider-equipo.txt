@@ -1,0 +1,22 @@
+Begoña Iturralde Sanchís
+Jefa de equipo y Scrum Master
+
+Sobre mí
+Llevo equipos de desarrollo desde que dejé de programar a tiempo completo. Me importa más que el equipo crezca que entregar un sprint perfecto: hago mentoría, doy charlas y hablo con los clientes para que nadie trabaje a ciegas.
+
+Experiencia
+Jefa de equipo · Consultora Zumaque (2015 – actualidad)
+- Lideré un equipo de nueve personas en tres proyectos para clientes del sector seguros.
+- Facilito como Scrum Master las ceremonias y el tablero de Jira de los tres equipos.
+- Programa de mentoría para perfiles junior: siete personas pasaron a semisénior.
+- Ponente en dos encuentros locales sobre cómo dar feedback sin destrozar a nadie.
+- Negociación del alcance con los clientes y reuniones de seguimiento en inglés.
+- Algo de código cuando hace falta: pantallas en React y pequeños servicios en Node.js.
+
+Habilidades
+liderazgo, mentoría, charlas, Scrum Master, Jira, Confluence, inglés, clientes, React, Node.js
+
+Proyectos
+- Guía interna para incorporar a personas nuevas en dos semanas en lugar de dos meses.
+- Retrospectivas con juegos de mesa: la asistencia pasó de la mitad del equipo a casi todos.
+- Plantilla de acuerdos de equipo que hoy usan cinco equipos de la consultora.

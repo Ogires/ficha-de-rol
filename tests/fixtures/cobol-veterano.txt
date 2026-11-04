@@ -1,0 +1,24 @@
+Ramiro Escandell Puigvert
+Analista programador COBOL · mainframe
+
+Resumen
+Treinta años manteniendo el corazón de la banca: COBOL, CICS y JCL en mainframe, más AS/400 para los sistemas de sucursales. Me llaman cuando nadie más se atreve a tocar un programa escrito antes de que existiera internet.
+
+Experiencia
+Analista programador sénior · Banco Ficticio del Levante (2010 - actualidad)
+- Mantenimiento de más de 400 programas COBOL y transacciones CICS para la operativa diaria.
+- Guardias de fin de mes y de cierre de año: el batch de JCL no puede fallar.
+- Dirigí la migración de los ficheros VSAM a DB2 sin parar el servicio.
+- Soporte a los equipos de sucursal con incidencias del AS/400.
+- Documenté la deuda técnica de los módulos de préstamos antes de su modernización.
+
+Programador COBOL · Caja Rural Imaginaria (1995 - 2010)
+- Desarrollo y mantenimiento de programas COBOL batch y online con CICS.
+- Migración de las cadenas de JCL para el cambio de milenio.
+- Soporte de guardia a operaciones del mainframe.
+
+Habilidades
+COBOL, CICS, JCL, mainframe, AS/400, DB2, VSAM, migraciones, soporte, guardias
+
+Formación
+Programación de aplicaciones de gestión, Instituto Politécnico de Gandía (1992 - 1994)

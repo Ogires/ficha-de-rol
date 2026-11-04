@@ -5,3 +5,9 @@ declare global {
     interface Env extends EnvWorker {}
   }
 }
+
+// Vite importa ficheros como texto con ?raw
+declare module "*?raw" {
+  const contenido: string;
+  export default contenido;
+}

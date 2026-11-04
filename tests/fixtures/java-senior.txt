@@ -1,0 +1,24 @@
+Lucía Ferrándiz Quiroga
+Desarrolladora backend sénior · Villarrobledo
+
+Perfil
+Desarrolladora backend especializada en Java y Spring Boot. Diseño servicios que aguantan picos de tráfico, con PostgreSQL y Kafka por debajo, y me gusta dejar el código mejor de lo que lo encontré. Busco una empresa donde el backend importe tanto como la pantalla.
+
+Experiencia
+Desarrolladora backend sénior · Zarandaja Logística (06/2019 – actualidad)
+- Diseño la API de seguimiento de envíos en Java 17 con Spring Boot y Hibernate sobre PostgreSQL.
+- Monté la mensajería entre almacenes con Kafka: unos dos millones de eventos al día.
+- Empaqueté los servicios en Docker y reduje el tiempo de despliegue a la mitad.
+- Optimicé las consultas SQL más lentas y bajé la latencia del servidor un 60 %.
+- Acompaño a una persona junior en sus primeros meses en el equipo.
+
+Desarrolladora Java · Zarandaja Logística (03/2012 – 05/2019)
+- Programé el backend de facturación en Java con Spring y Hibernate.
+- Pasé los informes nocturnos por lotes a consultas en PostgreSQL.
+- Escribí la integración con la pasarela de pagos de los clientes.
+
+Habilidades
+Java, Spring Boot, Hibernate, PostgreSQL, Kafka, Docker, SQL, Git
+
+Formación
+Ingeniería Informática, Universidad de Albacete (2006 – 2011)

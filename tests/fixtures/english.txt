@@ -1,0 +1,27 @@
+Daniel Okonkwo-Rasmussen
+Senior QA Engineer
+
+Summary
+Senior QA engineer who believes a release without tests is a rumour. I build test suites that developers actually run, wire them into CI/CD and keep an eye on production with proper dashboards.
+
+Experience
+Senior QA Engineer · Brindlewick Software (Jan 2016 – Present)
+- Built the end-to-end suite with Playwright and Cypress: 900 tests running on every pull request.
+- Rewrote the old Selenium scripts in Playwright and cut flaky failures by 80%.
+- Unit and component tests with Jest alongside the web team.
+- Owned the CI/CD pipelines in GitHub Actions, with test reports and automatic retries.
+- Set up Sentry and Grafana dashboards so we hear about bugs before anyone else does.
+- Ran monthly bug bashes focused on testability and clear bug reports.
+
+Skills
+Playwright, Cypress, Selenium, Jest, CI/CD, GitHub Actions, Sentry, Grafana, Docker, Git
+
+Education
+BSc in Computer Science, University of Northbridge (2011 - 2015)
+
+Certifications
+ISTQB Foundation Level
+
+Projects
+- Open source helper that turns Playwright traces into readable bug reports for the support team.
+- Talk at a local testing meetup about keeping end-to-end suites fast as they grow.

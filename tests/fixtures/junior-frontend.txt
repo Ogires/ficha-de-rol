@@ -1,0 +1,26 @@
+Marta Quiñones Albarracín
+Desarrolladora frontend junior
+
+Sobre mí
+Desarrolladora frontend con ganas de aprender. Me gusta construir interfaces rápidas y accesibles con React y TypeScript, cuidar el CSS hasta el último píxel y que todo se vea bien en el móvil.
+
+Experiencia
+Desarrolladora frontend · Estudio Pimpollo (09/2024 – actualidad)
+- Construyo componentes en React y TypeScript para el panel de clientes.
+- Maqueto pantallas con CSS y Tailwind a partir de los diseños de Figma.
+- Cambié el empaquetado de Webpack a Vite y el arranque bajó de 40 a 4 segundos.
+- Escribo tests unitarios con Jest para los componentes más usados.
+- Reviso la accesibilidad con el lector de pantalla antes de cada entrega.
+
+Proyectos
+- Recetario: una SPA con React, TypeScript y Tailwind que guarda las recetas en el navegador.
+- Portfolio personal con HTML y CSS a mano, diseño adaptable y modo oscuro.
+- Juego de memoria con JavaScript sin librerías para practicar el DOM.
+- Extensión sencilla que lee en voz alta los titulares de una web.
+
+Habilidades
+React, TypeScript, JavaScript, HTML, CSS, Tailwind, Vite, Jest, Git, Figma
+
+Formación
+Ciclo Superior de Desarrollo de Aplicaciones Web (2022 – 2024)
+Curso de React y TypeScript en una academia en línea (2024)

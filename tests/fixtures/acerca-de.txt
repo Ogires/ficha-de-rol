@@ -1,0 +1,14 @@
+Arquitecto de software en la nube. Diseño plataformas en AWS con Terraform y Kubernetes, y me gusta que el dominio mande: arquitectura hexagonal, DDD y microservicios que se puedan desplegar por separado sin pedir permiso al equipo de al lado.
+
+Escribo Python a diario, sobre todo con Django para los servicios internos, pero lo que de verdad me divierte es la arquitectura de software: decidir dónde van los límites, cuándo un monolito modular basta y cuándo toca partirlo en microservicios.
+
+En mi día a día:
+- Diseño de plataformas en AWS: Lambda, colas y bases de datos gestionadas, todo como código con Terraform.
+- Clústeres de Kubernetes para equipos que nunca habían tocado uno.
+- Talleres internos de DDD y arquitectura hexagonal para que los equipos hablen el lenguaje del negocio.
+- Event sourcing y CQRS donde aportan, y no donde solo suenan bien.
+- Revisión de diseños con patrones de diseño, principios SOLID y escalabilidad desde el primer día.
+
+Si te interesa hablar de sistemas distribuidos, de cómo partir un monolito sin dolor o de por qué Kubernetes no siempre es la respuesta, escríbeme.
+
+Ahora mismo ayudo a una empresa de logística a pasar de un único despliegue semanal a docenas al día, sin que nadie pierda el sueño.
