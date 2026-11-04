@@ -46,9 +46,9 @@ Navegador ── (PDF → pdf.js local → texto) ──► POST /api/ficha {tex
        └─ menos de 3 términos ─► 422, sin gastar IA
   3. Contador (Durable Object): topes por IP + reserva de neuronas del día ── sin cupo ─► ficha manual
   4. En paralelo:
-     ├─ Texto (Workers AI) → JSON validado → filtro de palabras propias → Llama Guard
+     ├─ Texto (Workers AI) → JSON validado → filtros de palabras propias y de copias → Llama Guard
      │     └─ falla o marca ─► banco de frases
-     └─ Flux, con un prompt hecho SOLO de enums (clase, raza, aspecto, objeto)
+     └─ Flux, con un prompt hecho SOLO de enums (clase y género, raza, aspecto, objeto)
            └─ falla ─► galería de respaldo
   5. KV: f:{id} (JSON) + r:{id} (JPEG) → {id}
 ```
@@ -59,7 +59,7 @@ Navegador ── (PDF → pdf.js local → texto) ──► POST /api/ficha {tex
 | `GET /api/ficha/{id}` | JSON de la ficha |
 | `GET /f/{id}` | `f.html` con HTMLRewriter: `og:title` "Paladín de .NET · nivel 18", `og:image` = retrato, `noindex` |
 | `GET /f/{id}/retrato.jpg` | JPEG desde KV, `Cache-Control: immutable` |
-| `/galeria/{clase}-{raza}.jpg` | Asset estático (galería de respaldo) |
+| `/galeria/{clase}-{raza}-{f\|m}.jpg` | Asset estático (galería de respaldo) |
 
 **Decisiones clave:**
 - **El retrato no depende del texto de la IA.** Su prompt sale de las reglas: un estilo fijo, la clase y su género, la raza con sus rasgos, el aspecto y un objeto icónico. Por eso Flux y el modelo de texto corren en paralelo (unos 4 s en total), y el CV nunca llega al modelo de imagen.
