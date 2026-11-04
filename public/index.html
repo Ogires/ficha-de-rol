@@ -1,1 +1,92 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Ficha de Rol</title></head><body><h1>Ficha de Rol</h1></body></html>
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ficha de Rol</title>
+  <meta name="description" content="Convierte tu CV en una ficha de personaje con retrato pintado por IA.">
+  <meta name="color-scheme" content="dark light">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Ficha de Rol">
+  <meta property="og:title" content="Ficha de Rol">
+  <meta property="og:description" content="Convierte tu CV en una ficha de personaje con retrato pintado por IA.">
+  <meta property="og:image" content="https://rol.webninja.fyi/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="627">
+  <meta property="og:url" content="https://rol.webninja.fyi/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/fuentes/cinzel-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <a class="saltar" href="#formulario">Ir al formulario</a>
+
+  <header class="portada">
+    <svg class="d20" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+      <polygon class="d20__cara" points="50,4 92,28 92,72 50,96 8,72 8,28" />
+      <path class="d20__arista" d="M50 26 L78 70 L22 70 Z M50 4 L50 26 M8 28 L50 26 M92 28 L50 26 M8 28 L22 70 M8 72 L22 70 M50 96 L22 70 M50 96 L78 70 M92 72 L78 70 M92 28 L78 70" />
+      <text class="d20__num" x="50" y="61" text-anchor="middle">20</text>
+    </svg>
+    <h1>Ficha de Rol</h1>
+    <p class="portada__lema">Pega tu CV y descubre tu clase, tu nivel y tus hechizos.</p>
+  </header>
+
+  <main>
+    <form id="formulario" class="pergamino" novalidate>
+      <div class="campo">
+        <label for="texto">Tu CV o el «Acerca de» de LinkedIn</label>
+        <textarea id="texto" name="texto" rows="10" maxlength="12000" required aria-describedby="contador ayuda-texto"
+          placeholder="Pega aquí tu experiencia, tus tecnologías y tus fechas…"></textarea>
+        <p class="campo__pie"><span id="ayuda-texto">Con fechas sube el nivel.</span> <span id="contador">0 / 12.000</span></p>
+      </div>
+
+      <div class="campo campo--pdf">
+        <label for="pdf">…o elige tu CV en PDF <span class="nota">(se lee en tu navegador y no sale de tu equipo)</span></label>
+        <input type="file" id="pdf" accept="application/pdf">
+      </div>
+
+      <fieldset class="opciones">
+        <legend>Raza</legend>
+        <label><input type="radio" name="raza" value="humano" checked> Humano</label>
+        <label><input type="radio" name="raza" value="elfo"> Elfo</label>
+        <label><input type="radio" name="raza" value="enano"> Enano</label>
+        <label><input type="radio" name="raza" value="orco"> Orco</label>
+        <label><input type="radio" name="raza" value="mediano"> Mediano</label>
+        <label><input type="radio" name="raza" value="gnomo"> Gnomo</label>
+      </fieldset>
+
+      <fieldset class="opciones">
+        <legend>Aspecto</legend>
+        <label><input type="radio" name="aspecto" value="femenino"> Femenino</label>
+        <label><input type="radio" name="aspecto" value="masculino"> Masculino</label>
+        <label><input type="radio" name="aspecto" value="sorpresa" checked> Sorpresa <span class="nota">(decide el dado; con yelmo o capucha)</span></label>
+      </fieldset>
+
+      <div class="campo">
+        <label for="nombre">Nombre del personaje <span class="nota">(opcional: solo sale en tu pantalla y en tu imagen)</span></label>
+        <input type="text" id="nombre" maxlength="40" autocomplete="off">
+      </div>
+
+      <button type="submit" id="tirar" class="boton boton--principal">Tirar iniciativa</button>
+      <p id="estado" class="estado" role="status" aria-live="polite"></p>
+    </form>
+
+    <section id="resultado" class="resultado" hidden aria-labelledby="titulo-resultado">
+      <h2 id="titulo-resultado" class="visualmente-oculto" tabindex="-1">Tu ficha</h2>
+      <div id="ficha"></div>
+      <div class="acciones">
+        <button type="button" id="descargar" class="boton boton--principal">Descargar imagen</button>
+        <button type="button" id="copiar" class="boton">Copiar enlace</button>
+      </div>
+    </section>
+
+    <noscript><p class="pergamino">Ficha de Rol necesita JavaScript para leer tu CV y pintar la ficha.</p></noscript>
+  </main>
+
+  <footer class="pie">
+    <p>Tu CV no se guarda. La ficha pública no lleva tu nombre.</p>
+    <p><a href="https://github.com/Ogires/ficha-de-rol">Código en GitHub</a> · Una app de <a href="https://webninja.fyi">webninja.fyi</a></p>
+  </footer>
+</body>
+</html>

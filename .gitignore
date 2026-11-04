@@ -9,3 +9,6 @@ data/privado/
 
 # Plan de implementación: notas de trabajo para el agente, no se publica
 docs/plans/*-mv1.md
+
+# Capturas locales de Playwright
+.playwright-mcp/

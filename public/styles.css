@@ -1,0 +1,602 @@
+/* Ficha de Rol · pergamino oscuro y dorado. Sin estilos en línea: la CSP solo admite este fichero */
+
+@font-face {
+  font-family: "Cinzel";
+  src: url("/fuentes/cinzel-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cinzel";
+  src: url("/fuentes/cinzel-latin-700-normal.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: dark;
+  --fondo: #15110d;
+  --fondo-2: #1f1913;
+  --pergamino: #2a2219;
+  --borde: #5a4630;
+  --oro: #d9b44a;
+  --oro-suave: #a8842a;
+  --texto: #f1e6cf;
+  --texto-suave: #c9b99a;
+  --lacre: #c0503a;
+  --foco: #ffd76a;
+  --sombra: 0 1.5rem 3rem rgb(0 0 0 / 0.45);
+  /* La imagen descargable se pinta siempre en oscuro, sea cual sea el tema */
+  --lienzo-fondo: #1d1712;
+  --lienzo-oro: #d9b44a;
+  --lienzo-texto: #f3e9d2;
+  --titulo: "Cinzel", "Trajan Pro", Georgia, serif;
+  --cuerpo: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --fondo: #efe4cc;
+    --fondo-2: #fbf5e6;
+    --pergamino: #f7eedb;
+    --borde: #b99c6b;
+    --oro: #7a5c0c;
+    --oro-suave: #a8842a;
+    --texto: #2b2117;
+    --texto-suave: #5b4a35;
+    --lacre: #9b2f1f;
+    --foco: #1f5fbf;
+    --sombra: 0 1rem 2.5rem rgb(80 55 20 / 0.18);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 0 16px 2rem;
+  font: 1rem/1.55 var(--cuerpo);
+  color: var(--texto);
+  background-color: var(--fondo);
+  background-image:
+    radial-gradient(ellipse at 50% -10%, rgb(217 180 74 / 0.16), transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)' opacity='0.06'/%3E%3C/svg%3E");
+  overflow-x: hidden;
+}
+
+main,
+.portada,
+.pie {
+  max-width: 46rem;
+  margin-inline: auto;
+}
+
+a {
+  color: var(--oro);
+}
+
+:focus-visible {
+  outline: 3px solid var(--foco);
+  outline-offset: 3px;
+}
+
+.saltar {
+  position: absolute;
+  left: 16px;
+  top: -3rem;
+  padding: 0.5rem 1rem;
+  background: var(--oro);
+  color: var(--fondo);
+  z-index: 10;
+}
+.saltar:focus {
+  top: 0.5rem;
+}
+
+.visualmente-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- Portada ---------- */
+
+.portada {
+  text-align: center;
+  padding: 2.5rem 0 1.5rem;
+}
+
+.portada h1 {
+  margin: 0.25rem 0 0;
+  font: 700 clamp(2.3rem, 9vw, 3.8rem) / 1.05 var(--titulo);
+  letter-spacing: 0.06em;
+  background: linear-gradient(180deg, #f6dd8a 0%, var(--oro) 55%, var(--oro-suave) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .portada h1 {
+    background: none;
+    color: var(--oro);
+  }
+}
+
+.portada--compacta {
+  padding: 1.5rem 0 1rem;
+}
+.portada .portada__marca {
+  margin: 0;
+  font: 700 1.4rem var(--titulo);
+  letter-spacing: 0.08em;
+  background: none;
+  color: var(--oro);
+}
+.portada__marca a {
+  color: var(--oro);
+  text-decoration: none;
+}
+
+.portada__lema {
+  margin: 0.75rem auto 0;
+  max-width: 30ch;
+  color: var(--texto-suave);
+  font-size: 1.1rem;
+}
+
+.d20 {
+  width: 4.5rem;
+  height: 4.5rem;
+  overflow: visible;
+}
+.d20__cara {
+  fill: var(--pergamino);
+  stroke: var(--oro);
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+.d20__arista {
+  fill: none;
+  stroke: var(--oro-suave);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+}
+.d20__num {
+  fill: var(--oro);
+  font: 700 22px var(--titulo);
+}
+
+/* ---------- Formulario ---------- */
+
+.pergamino {
+  position: relative;
+  padding: 1.5rem 1.25rem;
+  background: var(--pergamino);
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 4px var(--pergamino), inset 0 0 0 5px rgb(217 180 74 / 0.35), var(--sombra);
+}
+
+.campo {
+  margin-bottom: 1.25rem;
+}
+
+.campo > label,
+.opciones legend {
+  display: block;
+  margin-bottom: 0.4rem;
+  font: 700 0.95rem/1.3 var(--titulo);
+  letter-spacing: 0.04em;
+  color: var(--oro);
+}
+
+.nota {
+  font: 400 0.85rem var(--cuerpo);
+  letter-spacing: 0;
+  color: var(--texto-suave);
+}
+
+textarea,
+input[type="text"] {
+  width: 100%;
+  padding: 0.75rem;
+  font: inherit;
+  color: var(--texto);
+  background: var(--fondo-2);
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+}
+textarea {
+  resize: vertical;
+  min-height: 12rem;
+}
+textarea::placeholder {
+  color: var(--texto-suave);
+  opacity: 0.8;
+}
+
+.campo__pie {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+}
+
+input[type="file"] {
+  max-width: 100%;
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+}
+input[type="file"]::file-selector-button {
+  margin-right: 0.75rem;
+  padding: 0.45rem 0.9rem;
+  font: 700 0.85rem var(--titulo);
+  color: var(--texto);
+  background: var(--fondo-2);
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.opciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  border: 0;
+}
+.opciones legend {
+  width: 100%;
+  padding: 0;
+}
+.opciones label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  background: var(--fondo-2);
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+.opciones label:has(input:checked) {
+  border-color: var(--oro);
+  background: rgb(217 180 74 / 0.16);
+}
+.opciones input {
+  accent-color: var(--oro);
+  margin: 0;
+}
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 2.9rem;
+  padding: 0.6rem 1.4rem;
+  font: 700 1rem var(--titulo);
+  letter-spacing: 0.05em;
+  color: var(--texto);
+  background: var(--fondo-2);
+  border: 1px solid var(--oro-suave);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.boton:hover:not(:disabled) {
+  border-color: var(--oro);
+}
+.boton:disabled,
+.boton[aria-disabled="true"] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+textarea[aria-invalid="true"] {
+  border-color: var(--lacre);
+  box-shadow: 0 0 0 1px var(--lacre);
+}
+.boton--principal {
+  color: #1d1408;
+  background: linear-gradient(180deg, #f2d77e, var(--oro-suave));
+  border-color: #f2d77e;
+  box-shadow: 0 0.4rem 1rem rgb(168 132 42 / 0.35);
+}
+.boton--principal:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+form .boton--principal {
+  width: 100%;
+  font-size: 1.15rem;
+}
+
+.estado {
+  min-height: 1.5em;
+  margin: 0.9rem 0 0;
+  text-align: center;
+  color: var(--texto-suave);
+}
+
+/* El d20 gira mientras se tira la iniciativa */
+body.tirando .d20 {
+  animation: rodar 0.9s cubic-bezier(0.4, 0.1, 0.3, 1) infinite;
+}
+body.tirando #tirar::after {
+  content: "";
+  width: 1.3rem;
+  height: 1.3rem;
+  background: url("/favicon.svg") center / contain no-repeat;
+  animation: rodar 0.9s linear infinite;
+}
+@keyframes rodar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.tirando .d20,
+  body.tirando #tirar::after {
+    animation: latir 1.6s ease-in-out infinite;
+  }
+  @keyframes latir {
+    50% {
+      opacity: 0.45;
+    }
+  }
+}
+
+/* ---------- Ficha ---------- */
+
+.resultado {
+  margin-top: 2.5rem;
+}
+
+.ficha {
+  display: grid;
+  gap: 1.5rem;
+  padding: 1.75rem 1.25rem;
+  background: var(--pergamino);
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 5px var(--pergamino), inset 0 0 0 6px rgb(217 180 74 / 0.45), var(--sombra);
+}
+
+.ficha__lado {
+  display: grid;
+  justify-items: center;
+  gap: 1.25rem;
+}
+
+/* Medallón redondo: además de lucir, deja fuera las esquinas, donde Flux pinta firmas falsas */
+.ficha__retrato {
+  width: min(72vw, 18rem);
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 50%;
+  background: var(--fondo-2);
+  box-shadow:
+    0 0 0 4px var(--oro),
+    0 0 0 9px var(--pergamino),
+    0 0 0 11px var(--oro-suave),
+    0 1rem 2rem rgb(0 0 0 / 0.5);
+}
+
+.ficha__cabecera {
+  text-align: center;
+}
+.ficha__nombre {
+  margin: 0;
+  font: 400 1.05rem var(--titulo);
+  letter-spacing: 0.08em;
+  color: var(--texto-suave);
+}
+.ficha__clase {
+  margin: 0.15rem 0 0.35rem;
+  font: 700 clamp(1.6rem, 6vw, 2.1rem) / 1.15 var(--titulo);
+  color: var(--oro);
+  text-wrap: balance;
+}
+.ficha__nivel summary {
+  display: inline-block;
+  font: 700 1.05rem var(--titulo);
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+.ficha__nivel p,
+.ficha__atributos details p {
+  margin: 0.35rem 0 0;
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+}
+.ficha__sello {
+  display: inline-block;
+  margin: 0.75rem 0 0;
+  padding: 0.3rem 0.8rem;
+  font: 700 0.8rem var(--titulo);
+  letter-spacing: 0.05em;
+  color: var(--lacre);
+  border: 2px solid currentColor;
+  border-radius: 3px;
+  transform: rotate(-2deg);
+}
+
+/* Hexágono de atributos */
+.hexagono {
+  width: min(80vw, 17rem);
+  height: auto;
+  overflow: visible;
+}
+.hexagono__anillo {
+  fill: none;
+  stroke: var(--borde);
+  stroke-width: 1;
+}
+.hexagono__eje {
+  stroke: var(--borde);
+  stroke-width: 1;
+}
+.hexagono__area {
+  fill: rgb(217 180 74 / 0.3);
+  stroke: var(--oro);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+}
+.hexagono__punto {
+  fill: var(--oro);
+}
+.hexagono__sigla {
+  fill: var(--texto-suave);
+  font: 700 11px var(--titulo);
+  letter-spacing: 0.06em;
+}
+.hexagono__valor {
+  fill: var(--texto);
+  font: 700 15px var(--titulo);
+}
+
+.ficha__atributos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5.75rem, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ficha__atributos details {
+  height: 100%;
+  padding: 0.5rem 0.6rem;
+  background: var(--fondo-2);
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+}
+.ficha__atributos summary {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  cursor: pointer;
+  list-style: none;
+}
+.ficha__atributos summary::-webkit-details-marker {
+  display: none;
+}
+/* Pista de que se despliega el «¿por qué?» */
+.ficha__atributos summary::before {
+  content: "▸";
+  font-size: 0.8rem;
+  color: var(--oro-suave);
+  transition: transform 0.15s;
+}
+.ficha__atributos details[open] summary::before {
+  transform: rotate(90deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ficha__atributos summary::before {
+    transition: none;
+  }
+}
+.ficha__atributos abbr {
+  font: 700 0.85rem var(--titulo);
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  color: var(--texto-suave);
+}
+.ficha__valor {
+  margin-left: auto;
+  font: 700 1.5rem var(--titulo);
+  color: var(--oro);
+}
+.ficha__atributos li:has(details[open]) {
+  grid-column: 1 / -1;
+}
+
+.ficha__seccion h4 {
+  margin: 0 0 0.5rem;
+  font: 700 0.9rem var(--titulo);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--oro);
+}
+.ficha__seccion h4::after {
+  content: "";
+  display: block;
+  height: 1px;
+  margin-top: 0.4rem;
+  background: linear-gradient(90deg, var(--oro-suave), transparent);
+}
+.ficha__seccion p,
+.ficha__seccion ul {
+  margin: 0;
+}
+.ficha__seccion ul {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0;
+  list-style: none;
+}
+.ficha__seccion strong {
+  font-family: var(--titulo);
+  color: var(--oro);
+}
+.ficha__defecto p {
+  font-style: italic;
+}
+
+.ficha__cuerpo {
+  display: grid;
+  gap: 1.4rem;
+  min-width: 0;
+}
+
+@media (min-width: 48rem) {
+  .ficha {
+    grid-template-columns: 18rem minmax(0, 1fr);
+    align-items: start;
+    padding: 2rem;
+  }
+  .ficha__cabecera {
+    text-align: left;
+  }
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 1.25rem;
+}
+
+.llamada {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+/* ---------- Pie ---------- */
+
+.pie {
+  margin-top: 3rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+}
+.pie p {
+  margin: 0.25rem 0;
+}

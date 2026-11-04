@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Ficha de Rol</title>
+  <meta name="description" content="Convierte tu CV en una ficha de personaje con retrato pintado por IA.">
+  <meta name="color-scheme" content="dark light">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Ficha de Rol">
+  <meta property="og:title" content="Ficha de Rol">
+  <meta property="og:description" content="Convierte tu CV en una ficha de personaje con retrato pintado por IA.">
+  <meta property="og:image" content="https://rol.webninja.fyi/og-image.png">
+  <meta property="og:image:width" content="1024">
+  <meta property="og:image:height" content="1024">
+  <meta property="og:url" content="https://rol.webninja.fyi/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/pagina-ficha.js"></script>
+</head>
+<body>
+  <header class="portada portada--compacta">
+    <h1 class="portada__marca"><a href="/">Ficha de Rol</a></h1>
+  </header>
+
+  <main>
+    <h2 class="visualmente-oculto">Ficha de personaje</h2>
+    <div id="ficha"><p class="estado">Desenrollando el pergamino…</p></div>
+    <div class="acciones">
+      <button type="button" id="descargar" class="boton" hidden>Descargar imagen</button>
+      <a class="boton boton--principal" href="/">Haz la tuya</a>
+    </div>
+    <p id="estado" class="estado" role="status" aria-live="polite"></p>
+  </main>
+
+  <footer class="pie">
+    <p>Esta ficha no lleva el CV ni el nombre de nadie: solo lo que calcularon las reglas y escribió el oráculo.</p>
+    <p><a href="https://github.com/Ogires/ficha-de-rol">Código en GitHub</a> · Una app de <a href="https://webninja.fyi">webninja.fyi</a></p>
+  </footer>
+</body>
+</html>
