@@ -1,0 +1,152 @@
+{
+  "trasfondos": {
+    "guerrero": [
+      "Forjó su leyenda a golpe de {principal}, en servidores que nadie más se atrevía a reiniciar. A nivel {nivel}, sigue plantando cara a las peticiones que los demás esquivan.",
+      "Se ganó el título de {clase} la noche en que aguantó un pico de tráfico sin perder una sola petición. Nadie sabe si es verdad, pero desde entonces le invitan a la primera ronda.",
+      "Entró en el gremio por la puerta de atrás, la del servidor, y nunca quiso salir de ahí. Su especialidad: {principal}. Su lema: si la base de datos aguanta, el reino aguanta.",
+      "Lleva {nivel} niveles defendiendo la muralla del backend. Las consultas lentas huyen a su paso, los índices le obedecen y los cuellos de botella cambian de ruta al oír su nombre.",
+      "Templó su acero en una forja donde los errores 500 se pagaban en oro. Hoy, con el título de {clase}, enseña a quienes empiezan que cada petición merece una respuesta, aunque sea un 404 bien puesto."
+    ],
+    "picaro": [
+      "Se cuela en cualquier pantalla y la deja más bonita de lo que la encontró. Su especialidad: {principal}. Nadie ha visto nunca un píxel fuera de su sitio cuando anda cerca.",
+      "Robó su primer botón de una web abandonada y le devolvió la vida con tres líneas de CSS. Desde entonces le llaman {clase}, y recorre el reino cambiando interfaces grises por otras que da gusto tocar.",
+      "Conoce todos los atajos del navegador y todos los rincones del DOM. A nivel {nivel}, puede maquetar un formulario con los ojos cerrados y que, aun así, pase la revisión de accesibilidad.",
+      "Nació en un taller de prototipos, entre bocetos y tazas de café frío. Su primera palabra fue «{principal}» y, desde entonces, sus interfaces se mueven tan rápido como sus dedos.",
+      "Le llaman {clase} porque puede hacer que la pantalla de un móvil parezca espaciosa. Ningún desplegable se le resiste y ningún botón se queda sin su estado de hover."
+    ],
+    "paladin": [
+      "Juró proteger los sistemas que sostienen el reino, por antiguos que sean. Su especialidad: {principal}. Cuando algo cruje a las tres de la mañana, es a quien llaman, y siempre contesta.",
+      "Lleva el escudo grabado con runas que ya casi nadie sabe leer. Por eso le llaman {clase}: las lee de corrido y, de paso, las traduce para quienes vienen detrás.",
+      "Ha cruzado más migraciones que una bandada de grullas y en todas llegó con el equipaje completo. A nivel {nivel}, ningún dato se le pierde por el camino.",
+      "Guarda en la memoria el mapa de cada módulo, incluido el que nadie se atreve a abrir. Su lema: lo que funciona se respeta, y lo que se toca se deja mejor que antes.",
+      "Lleva {nivel} niveles al pie del cañón con {principal}. Las guardias no le asustan: las vive como vigilias, con café, paciencia y un plan de vuelta atrás."
+    ],
+    "mago": [
+      "Estudió en la torre más alta del gremio, entre diagramas que solo se entienden de pie. Su especialidad: {principal}. Con un gesto, convierte un monolito enredado en piezas que encajan.",
+      "Le llaman {clase} porque ve los sistemas desde arriba, como un mapa encantado. Donde otros ven cajas y flechas, ve rutas, fronteras y el lugar exacto donde va a doler.",
+      "Escribió su primer conjuro en una servilleta: un diagrama de tres capas que todavía circula entre aprendices. A nivel {nivel}, sus diseños aguantan tormentas que aún no han llegado.",
+      "Pasó años en la biblioteca de los patrones, leyendo grimorios de arquitectura a la luz de una vela. Hoy su magia lleva un nombre, {principal}, y la lanza con la calma de quien ya ha visto caer otros castillos.",
+      "Su bastón tiene grabadas las palabras «depende del contexto», y no es por esquivar la pregunta. Quien lleva el título de {clase} sabe que cada reino necesita su propio hechizo, y lo encuentra."
+    ],
+    "explorador": [
+      "Recorre los caminos del código con el arco siempre tenso. Su especialidad: {principal}. Ningún bug cruza su territorio sin dejar huellas, y siempre sabe seguirlas.",
+      "Aprendió a rastrear en los bosques de los registros, donde cada línea cuenta una historia. Desde entonces le llaman {clase}, y lee esas historias antes de que acaben convertidas en incidencias.",
+      "Monta su campamento junto a los paneles de métricas y duerme con un ojo abierto. A nivel {nivel}, detecta una fuga de memoria por el olor, mucho antes que cualquier alarma.",
+      "Le llaman {clase} porque nunca pisa el mismo bug dos veces: lo marca, lo cerca y escribe la prueba que le cierra el paso para siempre.",
+      "Creció entre trampas para bugs y mapas de cobertura. Hoy guía a los grupos por el bosque de la producción, y con {principal} en el carcaj nadie se pierde por el camino."
+    ],
+    "bardo": [
+      "Va de taberna en taberna contando historias que hacen que los equipos se entiendan. Su especialidad: {principal}. Allá donde llega, las reuniones duran menos y se decide más.",
+      "Su laúd suena mejor en las reuniones difíciles. Por algo le llaman {clase}: convierte un «esto no llega» en un plan que todo el mundo entiende, y nadie sale de la sala sin saber qué hacer.",
+      "Ha dado más charlas que un pregonero en fiestas mayores, y en todas alguien acaba apuntando algo. A nivel {nivel}, sabe que la mejor canción es la que el equipo puede tararear después.",
+      "Aprendió a escuchar antes que a hablar y por eso, cuando habla, todo el mundo escucha. Cuida de quienes empiezan en el gremio y celebra cada vez que alguien le supera.",
+      "Lleva en la mochila un cuaderno de canciones y otro de acuerdos con clientes, y nunca confunde el uno con el otro. Con {principal} por bandera, tiende puentes donde otros levantan muros."
+    ]
+  },
+  "defectos": {
+    "guerrero": [
+      "Reinicia el servidor «por si acaso» antes de cada reunión importante.",
+      "Habla con la base de datos en voz baja para no ponerla nerviosa.",
+      "Cuenta los milisegundos de cada consulta como quien cuenta monedas.",
+      "No se fía de ninguna petición que llegue sin las cabeceras bien puestas.",
+      "Le pone nombre a cada índice y se ofende si alguien lo borra.",
+      "Desayuna registros del servidor y cena latencias.",
+      "Contesta «depende de la carga» a preguntas que no tienen nada que ver con servidores.",
+      "Afila la espada cada vez que alguien dice «es solo un endpoint más»."
+    ],
+    "picaro": [
+      "Mueve un píxel a la izquierda, lo mira y lo devuelve a su sitio. Así, veinte veces.",
+      "Tiene doce navegadores instalados y un favorito distinto cada semana.",
+      "No puede entrar en una web sin abrir las herramientas de desarrollo.",
+      "Discute con el diseño por dos tonos de gris que nadie más distingue.",
+      "Guarda capturas de botones bonitos como otros guardan fotos de viajes.",
+      "Prueba cada pantalla en su móvil, en el de su vecino y en el de su tía.",
+      "Anima cada transición aunque nadie se lo haya pedido.",
+      "Cree que casi cualquier problema se arregla con un buen espaciado."
+    ],
+    "paladin": [
+      "Conserva un manual de 1998 y lo consulta con más respeto que a cualquier oráculo.",
+      "Saluda a cada servidor veterano por su nombre al entrar en la sala.",
+      "No desenchufa ningún cable: «puede que algo dependa de él».",
+      "Duerme con el móvil de guardia bajo la almohada, incluso de vacaciones.",
+      "Comenta cada línea que toca con la fecha y una pequeña disculpa a quien la escribió.",
+      "Desconfía de cualquier cambio que no traiga un plan para deshacerlo.",
+      "Recuerda de memoria rutas de ficheros de sistemas que ya no existen.",
+      "Habla de sus migraciones como otros hablan de sus viajes: con fotos y anécdotas."
+    ],
+    "mago": [
+      "Dibuja un diagrama antes de pedir un café.",
+      "Responde «depende» a todo, incluso a «¿qué hora es?».",
+      "Tiene opiniones firmes sobre hacia dónde apunta cada flecha de la pizarra.",
+      "No puede ver una lista de la compra sin proponer separarla por dominios.",
+      "Lleva rotuladores de cuatro colores y un código secreto para cada uno.",
+      "Le pone nombre a cada capa de la lasaña.",
+      "Abre un documento de decisiones para elegir dónde cenar.",
+      "Sueña con cajas y flechas, y a veces habla en sueños de acoplamiento."
+    ],
+    "explorador": [
+      "Pulsa tres veces el botón del ascensor y apunta cuánto tarda en llegar.",
+      "Mira debajo de la mesa por si hay un bug escondido.",
+      "Comprueba la cerradura tres veces antes de irse de casa, y anota el resultado.",
+      "Sueña con un panel en rojo y se despierta a revisarlo.",
+      "Pide pruebas hasta de que el café está caliente.",
+      "Cuenta las grietas de la acera como casos límite.",
+      "Lleva una lupa en el bolsillo, «por si acaso».",
+      "Desconfía de cualquier cosa que funcione a la primera."
+    ],
+    "bardo": [
+      "Convierte cualquier conversación en una retrospectiva, con pósits incluidos.",
+      "Tiene una anécdota para cada situación, y dos para las difíciles.",
+      "No puede ver una pizarra en blanco sin coger un rotulador.",
+      "Empieza cada mensaje con un saludo de tres líneas.",
+      "Lleva pegatinas de todas las conferencias a las que ha ido, y de algunas a las que no.",
+      "Recuerda el cumpleaños de todo el equipo y el nombre de sus mascotas.",
+      "Habla con las manos, incluso por teléfono.",
+      "Se aprende el nombre de cada persona en la primera reunión y lo usa en todas las frases."
+    ]
+  },
+  "efectos": {
+    "FUE": [
+      "Invoca {nombre}: las peticiones se forman en fila y esperan su turno sin protestar.",
+      "Blande {nombre} y el servidor aguanta un pico de tráfico más sin despeinarse.",
+      "Con {nombre}, cada consulta encuentra su dato a la primera.",
+      "Lanza {nombre} y la transacción llega entera al otro lado, sin perder ni un céntimo.",
+      "Empuña {nombre}: el backend responde rápido aunque medio reino esté conectado."
+    ],
+    "DES": [
+      "Lanza {nombre}: la interfaz se recoloca sola en cualquier pantalla.",
+      "Con {nombre}, cada botón responde al clic antes de que termine el gesto.",
+      "Invoca {nombre} y los píxeles rebeldes vuelven a su sitio.",
+      "Con {nombre}, la pantalla carga antes de que nadie tenga tiempo de parpadear.",
+      "Agita {nombre} y el formulario más largo se vuelve fácil de rellenar."
+    ],
+    "CON": [
+      "Con {nombre}, el sistema más antiguo del reino arranca un día más.",
+      "Invoca {nombre}: ningún dato se pierde en la mudanza.",
+      "Alza {nombre} y la incidencia de madrugada se resuelve antes del alba.",
+      "Con {nombre}, el código antiguo cuenta sus secretos sin resistirse.",
+      "Invoca {nombre} y la vieja máquina vuelve a ronronear como el primer día."
+    ],
+    "INT": [
+      "Invoca {nombre}: el diagrama se dibuja solo y todas las flechas apuntan bien.",
+      "Con {nombre}, el sistema crece sin que se muevan los cimientos.",
+      "Conjura {nombre} y cada pieza del sistema encuentra su sitio.",
+      "Lanza {nombre}: cada servicio habla con los demás sin malentendidos.",
+      "Con {nombre}, la tormenta de peticiones se reparte por todo el reino."
+    ],
+    "SAB": [
+      "Invoca {nombre}: el bug aparece antes de que lo vea un usuario.",
+      "Con {nombre}, cada alarma suena a tiempo y solo cuando debe.",
+      "Dispara {nombre} y el error queda al descubierto, con línea y todo.",
+      "Con {nombre}, ningún cambio llega a producción sin pasar por la aduana.",
+      "Lanza {nombre} y el panel se ilumina justo donde está el problema."
+    ],
+    "CAR": [
+      "Invoca {nombre}: la reunión acaba a su hora y con acuerdos.",
+      "Con {nombre}, el equipo entero entiende el plan a la primera.",
+      "Toca {nombre} y hasta el cliente más serio sonríe en la demo.",
+      "Con {nombre}, las dudas del equipo encuentran respuesta antes del café.",
+      "Lanza {nombre} y la propuesta convence incluso a quien venía con prisa."
+    ]
+  }
+}
