@@ -95,7 +95,7 @@ El retrato es casi todo el gasto: Flux cobra por tesela de 512² y por paso, y u
 
 ```bash
 npm ci
-npm test           # 115 tests sobre el runtime real de Workers (KV y Durable Objects incluidos)
+npm test           # 119 tests sobre el runtime real de Workers (KV y Durable Objects incluidos)
 npm run typecheck
 npm run probar -- tests/fixtures/java-senior.txt   # las reglas con un CV, sin IA
 npm run dev        # http://localhost:8787 (usa Workers AI de tu cuenta: gasta neuronas)

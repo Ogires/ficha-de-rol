@@ -57,25 +57,56 @@ describe("crearIADesde", () => {
     expect(entradas[QWEN]).not.toHaveProperty("reasoning_effort");
     expect(mensajes[0].content).toBe("Reglas"); // no muta los mensajes originales
   });
-  it("plazos medidos en la 0B: principal 6 s, respaldo 4 s, guardia 8 s", () => {
-    expect(TIEMPOS).toEqual({ texto: 6_000, respaldo: 4_000, imagen: 15_000, guardia: 8_000 });
+  it("plazos medidos: principal 6 s, respaldo 4 s, guardia 12 s con una llamada de cobertura a los 4 s", () => {
+    expect(TIEMPOS).toEqual({ texto: 6_000, respaldo: 4_000, imagen: 15_000, guardia: 12_000, cobertura: 4_000 });
   });
   it("texto: si el principal se cuelga, prueba el respaldo con su propio plazo", async () => {
     const llamados: string[] = [];
     const ia = crearIADesde((modelo) => {
       llamados.push(modelo);
       return modelo === "m-texto" ? new Promise(() => {}) : Promise.resolve({ response: { ok: true } });
-    }, MODELOS, { texto: 20, respaldo: 200, imagen: 20, guardia: 20 });
+    }, MODELOS, { texto: 20, respaldo: 200, imagen: 20, guardia: 20, cobertura: 10 });
     expect(await ia.texto([], {})).toEqual({ ok: true });
     expect(llamados).toEqual(["m-texto", "m-respaldo"]);
   });
   it("texto: corta si ninguno de los dos responde a tiempo", async () => {
-    const ia = crearIADesde(() => new Promise(() => {}), MODELOS, { texto: 20, respaldo: 20, imagen: 20, guardia: 20 });
+    const ia = crearIADesde(() => new Promise(() => {}), MODELOS, { texto: 20, respaldo: 20, imagen: 20, guardia: 20, cobertura: 10 });
     await expect(ia.texto([], {})).rejects.toThrow(/timeout:texto/);
   });
   it("guardia: si no responde a tiempo, falla", async () => {
-    const ia = crearIADesde(() => new Promise(() => {}), MODELOS, { texto: 20, respaldo: 20, imagen: 20, guardia: 20 });
+    const ia = crearIADesde(() => new Promise(() => {}), MODELOS, { texto: 20, respaldo: 20, imagen: 20, guardia: 20, cobertura: 10 });
     await expect(ia.guardia("x")).rejects.toThrow(/timeout:guardia/);
+  });
+  it("guardia: si la primera llamada tarda, lanza otra igual y vale la primera que conteste", async () => {
+    // Latencia de Llama Guard en producción el 2026-11-05: 0,2 s, 10,2 s y 5,1 s seguidas
+    let llamadas = 0;
+    const ia = crearIADesde(() => (++llamadas === 1 ? new Promise(() => {}) : Promise.resolve({ response: "\n\nsafe" })), MODELOS,
+      { texto: 20, respaldo: 20, imagen: 20, guardia: 200, cobertura: 20 });
+    expect(await ia.guardia("x")).toBe(true);
+    expect(llamadas).toBe(2);
+  });
+  it("guardia: si la primera contesta antes de la cobertura, no hay segunda llamada", async () => {
+    let llamadas = 0;
+    const ia = crearIADesde(async () => (llamadas++, { response: "\n\nsafe" }), MODELOS,
+      { texto: 20, respaldo: 20, imagen: 20, guardia: 200, cobertura: 20 });
+    expect(await ia.guardia("x")).toBe(true);
+    await new Promise((r) => setTimeout(r, 60));
+    expect(llamadas).toBe(1);
+  });
+  it("guardia: si la primera da error, falla enseguida y sin segunda llamada (falla cerrado)", async () => {
+    let llamadas = 0;
+    const ia = crearIADesde(() => (llamadas++, Promise.reject(new Error("4006"))), MODELOS,
+      { texto: 20, respaldo: 20, imagen: 20, guardia: 5_000, cobertura: 2_000 });
+    const t0 = Date.now();
+    await expect(ia.guardia("x")).rejects.toThrow();
+    expect(Date.now() - t0).toBeLessThan(500);
+    expect(llamadas).toBe(1);
+  });
+  it("guardia: un «unsafe» que llega primero gana, aunque la otra llamada fuera a decir «safe»", async () => {
+    let llamadas = 0;
+    const ia = crearIADesde(() => (++llamadas === 1 ? new Promise(() => {}) : Promise.resolve({ response: "\n\nunsafe\nS1" })), MODELOS,
+      { texto: 20, respaldo: 20, imagen: 20, guardia: 200, cobertura: 20 });
+    expect(await ia.guardia("x")).toBe(false);
   });
   it("imagen: decodifica el base64 a bytes", async () => {
     const ia = crearIADesde(async () => ({ image: btoa("JPEG") }), MODELOS);

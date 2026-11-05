@@ -9,10 +9,11 @@ export interface IA {
 
 type Ejecutar = (modelo: string, entrada: Record<string, unknown>) => Promise<unknown>;
 interface Modelos { texto: string; respaldo: string; imagen: string; guardia: string }
-interface Tiempos { texto: number; respaldo: number; imagen: number; guardia: number }
-// Medidos en la 0B: la guardia tardó hasta 6,5 s; el principal tiene su plazo y el respaldo el suyo,
-// para que un principal colgado no deje la ficha sin probar el respaldo
-export const TIEMPOS: Tiempos = { texto: 6_000, respaldo: 4_000, imagen: 15_000, guardia: 8_000 };
+interface Tiempos { texto: number; respaldo: number; imagen: number; guardia: number; cobertura: number }
+// El principal tiene su plazo y el respaldo el suyo, para que un principal colgado no deje la ficha sin
+// probar el respaldo. La guardia tardó hasta 6,5 s en la 0B y 0,2 s, 10,2 s y 5,1 s seguidas en producción
+// el 2026-11-05: si a los 4 s (cobertura) no ha contestado, se lanza otra llamada igual
+export const TIEMPOS: Tiempos = { texto: 6_000, respaldo: 4_000, imagen: 15_000, guardia: 12_000, cobertura: 4_000 };
 
 // Ajustes propios de cada modelo, medidos en la Tarea 0A. Un modelo sin entrada funciona sin ajustes
 interface ConfigModelo { params?: Record<string, unknown>; sufijoSistema?: string }
@@ -97,7 +98,20 @@ export function crearIADesde(ejecutar: Ejecutar, modelos: Modelos, tiempos: Tiem
         { role: "user", content: "Escribe la ficha de rol de mi personaje." },
         { role: "assistant", content: texto },
       ];
-      return esSeguro(await conTimeout(ejecutar(modelos.guardia, { messages: mensajes }), tiempos.guardia, "guardia"));
+      const llamar = () => ejecutar(modelos.guardia, { messages: mensajes });
+      // Cobertura: vale la primera respuesta de las dos llamadas, dentro del mismo plazo total.
+      // Si la primera da error, falla enseguida (falla cerrado) y no se lanza la segunda
+      let espera: ReturnType<typeof setTimeout> | null = null;
+      const primera = llamar();
+      const segunda = new Promise<unknown>((resolver, rechazar) => {
+        espera = setTimeout(() => llamar().then(resolver, rechazar), tiempos.cobertura);
+        primera.catch(rechazar);
+      });
+      try {
+        return esSeguro(await conTimeout(Promise.race([primera, segunda]), tiempos.guardia, "guardia"));
+      } finally {
+        if (espera) clearTimeout(espera);
+      }
     },
   };
 }

@@ -181,7 +181,7 @@ El CV se trata como entrada hostil (LLM01, inyección de prompt):
 - La IA devuelve un JSON (JSON mode de Workers AI) con tres campos: trasfondo (≤400 caracteres), defecto (≤140) y un efecto de ≤100 por cada hechizo y objeto, para los nombres exactos que le pasan las reglas. Un texto que se pasa del límite sin llegar al doble se recorta en una palabra; cualquier otra desviación (nombres inventados, enlaces, HTML, campos que faltan) invalida la respuesta.
 - **Filtro de palabras propias** (LLM02, fuga de datos personales): se rechaza el campo que contenga una palabra que en el CV aparece siempre con mayúscula, salvo que sea un término del catálogo. La mayúscula de inicio de línea, viñeta o frase no cuenta ("Experiencia", "Construyo"), salvo en un nombre y apellido seguidos, y los enlaces y emails se quitan antes de mirar. Así no pasan el nombre de la persona, el de su empresa ni el de su ciudad. Un campo rechazado sale del banco de frases; algún falso positivo es aceptable.
 - **Sin copias del CV:** un campo que repite 6 palabras seguidas del CV sale también del banco de frases. Además de pedir texto propio, evita que se cuelen frases enteras con datos de la persona.
-- **Llama Guard** revisa el texto antes de guardarlo.
+- **Llama Guard** revisa el texto antes de guardarlo y falla cerrado: sin su «safe», el texto sale del banco. Su latencia es irregular (0,2 s, 10,2 s y 5,1 s seguidas en producción), así que si a los 4 s no ha contestado se lanza una segunda llamada igual y vale la primera respuesta, con un plazo total de 12 s.
 - **Tono:** el defecto y el trasfondo se ríen del personaje, nunca de prácticas reales de ingeniería ni de la edad, el género o el origen de nadie.
 - **La IA no decide lo visible en la vista previa** (clase y nivel) ni elige qué hechizos aparecen.
 - **Flux solo recibe enums**: no hay texto del usuario en su prompt.
@@ -201,7 +201,7 @@ El texto y el retrato fallan por separado. La demo nunca se queda en blanco.
 
 | Falla | Qué se usa |
 |---|---|
-| Texto: sin cupo, tope de IA de la IP, timeout (6 s el modelo principal y 4 s el de respaldo), JSON inválido o Llama Guard | Banco de frases escrito a mano: 5 trasfondos y 8 defectos por clase, con huecos que rellenan las reglas ({tecnología principal}, {clase}, {nivel}; nunca los años, para que un CV sin fechas no diga "0 años"). Los efectos salen de plantillas por atributo. La elección depende del hash del CV, así que el mismo CV da la misma ficha |
+| Texto: sin cupo, tope de IA de la IP, timeout (6 s el modelo principal, 4 s el de respaldo y 12 s la guardia), JSON inválido o Llama Guard | Banco de frases escrito a mano: 5 trasfondos y 8 defectos por clase, con huecos que rellenan las reglas ({tecnología principal}, {clase}, {nivel}; nunca los años, para que un CV sin fechas no diga "0 años"). Los efectos salen de plantillas por atributo. La elección depende del hash del CV, así que el mismo CV da la misma ficha |
 | Texto: el filtro de palabras propias o el de copias salta en un campo | Solo ese campo sale del banco; el resto se queda con el texto de la IA |
 | Retrato: sin cupo, error de Flux o tope de almacenamiento | Galería de 72 retratos (clase × raza × género). Se usa la versión del género de la clase, también con "sorpresa" |
 | Escritura en KV | Se enseña la ficha con el retrato de la galería (el propio no se puede servir sin guardarlo) y se puede descargar el PNG. "Copiar enlace" queda desactivado y explica por qué |
