@@ -154,21 +154,23 @@ La clase concuerda con el aspecto elegido; con "sorpresa", la forma la decide el
 
 ## 6. Coste y topes
 
-Precios de Workers AI comprobados el 2026-10-29 y consumo medido con el prompt real el 2026-11-04. El plan gratuito da 10.000 neuronas al día por cuenta, compartidas con el resto de apps de la factoría.
+Precios de Workers AI comprobados el 2026-10-29 y consumo medido con el prompt real el 2026-11-04 y en el panel de Workers AI el 2026-11-05. El plan gratuito da 10.000 neuronas al día por cuenta, compartidas con el resto de apps de la factoría.
 
 | Paso | Neuronas |
 |---|---|
 | Texto con `qwen3-30b-a3b-fp8` (~1.200 tokens de entrada y ~250 de salida, sin pensamiento) | ~13 |
 | Respaldo, solo si falla el anterior: `gpt-oss-20b` con razonamiento bajo | ~30 |
 | Llama Guard 3 | ~18 |
-| Flux-1-schnell, 1024² con 4 pasos | ~58 |
-| **Reserva por ficha** | **130** |
+| Flux-1-schnell, 1024² con 4 pasos | ~173 |
+| **Reserva por ficha** | **220** |
 
 - **Modelo de texto:** `qwen3-30b-a3b-fp8` dio 63 JSON válidos de 63 en la comparativa, con una mediana de 2,2 s. `gpt-oss-20b` escribe con más imaginación, pero se pasaba de largo, a veces devolvía la respuesta vacía y tardaba más de 6 s una de cada ocho veces, así que queda de respaldo.
-- **Cupo diario:** `CUOTA_NEURONAS_DIA` = 6.000, unas 46 fichas con IA al día. La reserva cubre el peor caso medido (respaldo incluido, ~141 contra las ~89 de una ficha normal) con margen hasta el límite de la cuenta.
+- **Flux cobra por tesela de 512² y por paso:** un retrato de 1024² con 4 pasos son 4 × 4 × 9,60 + 4 × 4,80 = 172,8 neuronas, el 85 % de una ficha. La tarifa se puede leer como una suma (57,6), pero el panel dio 10.200 neuronas de Flux para unas 59 imágenes.
+- **Cupo diario:** `CUOTA_NEURONAS_DIA` = 6.000, unas 27 fichas con IA al día. La reserva cubre una ficha normal (~204) con margen, y el peor caso medido (~256, con el respaldo) cabe en las 4.000 neuronas que quedan hasta el límite de la cuenta.
+- **El límite de la cuenta se aplica con retraso:** el 2026-11-04 se gastaron 14.250 neuronas antes del primer error 4006, y el bloqueo siguió después de las 00:00 UTC aunque el panel marcaba 0 neuronas del día. Por eso el cupo de la app se queda lejos de 10.000 y nada que se genere fuera de ella (galería, pruebas) debe gastar más de lo que deja libre.
 - **Por IP y día:** 5 fichas con IA (`TOPE_IA_IP_DIA`); a partir de ahí, la ficha sale manual, con un tope de 20 (`TOPE_FICHAS_IP_DIA`) para proteger las escrituras de KV.
 - **Almacenamiento:** el Durable Object lleva la cuenta de los bytes guardados en KV (1 GB gratis). Al llegar a 800 MB (`TOPE_BYTES_KV`), unos 1.460 retratos de ~550 KB, las fichas nuevas usan la galería.
-- **Galería de respaldo:** 6 clases × 6 razas × femenino/masculino = 72 retratos, generados una sola vez (~4.150 neuronas, repartibles en dos días) y servidos como assets, que son gratuitos e ilimitados.
+- **Galería de respaldo:** 6 clases × 6 razas × femenino/masculino = 72 retratos, generados una sola vez (~12.450 neuronas, repartidas en dos días) y servidos como assets, que son gratuitos e ilimitados.
 
 El contador (Durable Object con SQLite) reserva las neuronas **antes** de llamar a la IA, con el mismo patrón que el `Contador` de Interview Fight Club.
 

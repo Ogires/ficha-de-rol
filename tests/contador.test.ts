@@ -14,10 +14,10 @@ describe("Contador.consumir (ventana fija de un día)", () => {
     expect(r.filter(Boolean)).toHaveLength(20); // el test que KV suspende (lección 9)
   });
 
-  it("reserva cantidades: 6.000 neuronas a 130 dan 46 reservas", async () => {
+  it("reserva cantidades: 6.000 neuronas a 220 dan 27 reservas", async () => {
     const c = stub("t:neuronas");
-    const r = await Promise.all(Array.from({ length: 60 }, () => c.consumir(130, 6000, DIA, T)));
-    expect(r.filter(Boolean)).toHaveLength(46);
+    const r = await Promise.all(Array.from({ length: 60 }, () => c.consumir(220, 6000, DIA, T)));
+    expect(r.filter(Boolean)).toHaveLength(27);
   });
 
   it("el día siguiente empieza de cero", async () => {

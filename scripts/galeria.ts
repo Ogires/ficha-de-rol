@@ -1,6 +1,6 @@
 // scripts/galeria.ts — genera la galería de respaldo con el worker de pruebas (scripts/tarea0, puerto 8790)
-// 72 retratos: 6 clases × 6 razas × femenino/masculino, sin capucha. Cada uno gasta ~58 neuronas.
-// Uso: npx tsx scripts/galeria.ts <desde> <hasta>   (índices 0-72; 36 por día ≈ 2.070 neuronas)
+// 72 retratos: 6 clases × 6 razas × femenino/masculino, sin capucha. Cada uno gasta ~173 neuronas (4 teselas × 4 pasos).
+// Uso: npx tsx scripts/galeria.ts <desde> <hasta>   (índices 0-72; 36 ≈ 6.220 neuronas: no más de 36 por día)
 // Se salta los que ya existen: para regenerar uno, borra su fichero y vuelve a lanzar el rango
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { promptRetrato, rutaGaleria } from "../src/dominio/retrato";
