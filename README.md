@@ -89,7 +89,7 @@ Un único Cloudflare Worker con `assets` sirve la web y la API. El plan gratuito
 | Flux-1-schnell, 1024² y 4 pasos | ~173 |
 | **Reserva por ficha** | **220** |
 
-El retrato es casi todo el gasto: Flux cobra por tesela de 512² y por paso, y un retrato de 1024² con 4 pasos son 4 × 4 × 9,60 + 4 × 4,80 = 172,8 neuronas. Con un cupo de 6.000 neuronas salen unas 27 fichas con IA al día. Después, la ficha sale manual, pero completa. KV guarda la ficha y el retrato (~550 KB); al llegar a 800 MB, las fichas nuevas usan la galería. Los ids de modelo van en `vars` de `wrangler.jsonc`, nunca en el código.
+El retrato es casi todo el gasto: Flux cobra por tesela de 512² y por paso, y un retrato de 1024² con 4 pasos son 4 × 4 × 9,60 + 4 × 4,80 = 172,8 neuronas. El cupo de la app (`CUOTA_NEURONAS_DIA`) es de 6.000 neuronas, unas 27 fichas con IA al día; la semana del lanzamiento sube a 8.000, unas 36. Después, la ficha sale manual, pero completa. KV guarda la ficha y el retrato (~550 KB); al llegar a 800 MB, las fichas nuevas usan la galería. Los ids de modelo van en `vars` de `wrangler.jsonc`, nunca en el código.
 
 ## Desarrollo local
 
