@@ -17,7 +17,7 @@
     "MODELO_TEXTO_RESPALDO": "@cf/openai/gpt-oss-20b",
     "MODELO_IMAGEN": "@cf/black-forest-labs/flux-1-schnell",
     "MODELO_GUARDIA": "@cf/meta/llama-guard-3-8b",
-    "CUOTA_NEURONAS_DIA": "8000",
+    "CUOTA_NEURONAS_DIA": "6000",
     "RESERVA_NEURONAS": "220",
     "TOPE_IA_IP_DIA": "5",
     "TOPE_FICHAS_IP_DIA": "20",
